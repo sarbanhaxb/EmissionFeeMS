@@ -24,6 +24,13 @@ namespace EmissionFeeMS
         public string? Pollutant { get; set; }
     }
 
+    public class Coeff
+    {
+        public int Id { get; set; }
+        public string? Title { get; set; }
+        public string? Value { get; set; }
+    }
+
     public class CalcResult : INotifyPropertyChanged
     {
         string? code;
@@ -41,6 +48,7 @@ namespace EmissionFeeMS
                 OnPropertyChanged(nameof(Code));
                 OnPropertyChanged(nameof(Title));
                 OnPropertyChanged(nameof(Fee));
+                OnPropertyChanged(nameof(Result));
             }
         }
         public string? Title
@@ -97,7 +105,7 @@ namespace EmissionFeeMS
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

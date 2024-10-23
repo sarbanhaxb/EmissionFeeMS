@@ -122,39 +122,14 @@ namespace EmissionFeeMS
                 }
                 CalcResult(list);
             }
-            else
-            {
-                MessageBoxCustom messageBox = new("Некорректный формат данных", MessageType.Error, MessageButtons.Ok)
-                {
-                    Owner = this
-                };
-                messageBox.ShowDialog();
-            }
+            else new MessageBoxCustom("Неизвестный формат данных", MessageType.Error, MessageButtons.Ok) { Owner = this }.ShowDialog();
         }
 
 
-        private void CalcResult(List<string[]> data)
-        {
-            foreach (var s in data)
-            {
-                using ApplicationContext context = new();
-                context.EmissionFees.Load();
-                CalcResult result = new()
-                {
-                    Code = s[0],
-                    Mass = Convert.ToDouble(s[2]),
-                };
-                calcResults.Add(result);
-            }
-        }
+        private void CalcResult(List<string[]> data) => data.ForEach(item => calcResults.Add(new CalcResult() { Code = item[0], Mass = Convert.ToDouble(item[2]) }));
 
         private void PrintCacl(object sender, RoutedEventArgs e)
         {
-            CalcResult calcResult = MainData.SelectedItem as CalcResult;
-
-            Trace.WriteLine(calcResult.Mass);
-            Trace.WriteLine(calcResult.Fee);
-            Trace.WriteLine(calcResult.Result);
         }
 
         private void AddSumCalc(object sender, RoutedEventArgs e)
@@ -181,14 +156,19 @@ namespace EmissionFeeMS
 
         private void MainData_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (MainData.CurrentCell.Column.Header.ToString() == "Mi, т")
-                MassCell.IsReadOnly = false;
-            else if ((MainData.CurrentCell.Column.Header.ToString()) == "Код вещества")
+            if (MainData.CurrentCell.Column != null)
             {
-                CalcResult v = MainData.SelectedItem as CalcResult;
-                if (v.Code is null)
+                Trace.WriteLine(MainData.CurrentCell.Column.Header.ToString());
+
+                switch (MainData.CurrentCell.Column.Header.ToString())
                 {
-                    CodeCell.IsReadOnly = false;
+                    case "Mi, т":
+                        MassCell.IsReadOnly = false;
+                        break;
+                    case "Код вещества":
+                        var v = MainData.SelectedItem as CalcResult;
+                        /*if (v.Code is null) */CodeCell.IsReadOnly = false;
+                        break;
                 }
             }
         }
@@ -203,6 +183,8 @@ namespace EmissionFeeMS
         {
             calcResults.Add(new CalcResult());
         }
+
+        private void OpenPropertyWindows(object sender, RoutedEventArgs e) => new PropertyWindow().ShowDialog();
 
 
         //public void LoadFromMS()

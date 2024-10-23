@@ -109,7 +109,7 @@
                             <MenuItem Header="Ставки платы за выбросы" Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon CoinsOutline}" Click="OpenFeeTaxes"/>
                         </MenuItem>
                         <MenuItem Header="О программе">
-                            <MenuItem Header="Настройки программы"  Cursor="Hand" Icon="{materialDesign:PackIcon SettingsOutline}"/>
+                            <MenuItem Header="Настройки программы"  Cursor="Hand" Icon="{materialDesign:PackIcon SettingsOutline}" Click="OpenPropertyWindows"/>
                             <MenuItem Header="Справка"  Cursor="Hand" Icon="{materialDesign:PackIcon AboutOutline}"/>
                         </MenuItem>
                     </Menu>
@@ -118,7 +118,7 @@
                     <DataGrid x:Name="MainData" Style="{DynamicResource MaterialDesignDataGrid}" Padding="5" CanUserAddRows="False" IsReadOnly="False" AutoGenerateColumns="False" Width="Auto" Margin="10" Background="Transparent" MouseDoubleClick="MainData_MouseDoubleClick" RowEditEnding="MainData_RowEditEnding">
                         <DataGrid.ContextMenu>
                             <ContextMenu Style="{DynamicResource MaterialDesignContextMenu}">
-                                <MenuItem Header="Добавить строку" Icon="{materialDesign:PackIcon Kind=AddBold, Size=18}"/>
+                                <MenuItem Header="Добавить строку" Icon="{materialDesign:PackIcon Kind=AddBold, Size=18}" Click="AddNewRow"/>
                                 <MenuItem Header="Удалить строку" Icon="{materialDesign:PackIcon Kind=DeleteOutline, Size=18}" Click="DeleteItem"/>
                                 <MenuItem Header="Вставить" Click="PasteButton" Icon="{materialDesign:PackIcon Kind=ContentPaste, Size=18}"/>
                             </ContextMenu>
@@ -159,8 +159,6 @@
                     <Button Click="AddNewRow" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 185 0" ToolTip="Добавить строку" Width="45" Height="45">
                         <materialDesign:PackIcon Kind="Add" Width="45" Height="45" Foreground="#FF27292B"/>
                     </Button>
-                    <TextBox Style="{DynamicResource MaterialDesignTextBox}" Margin="20 0 0 0" Padding="5" Width="50" Background="White" HorizontalAlignment="Left" Height="30" FontSize="16" Foreground="Black" FontFamily="Arial"/>
-                    <TextBox Style="{DynamicResource MaterialDesignTextBox}" Margin="80 0 0 0" Padding="5" Width="50" Background="White" HorizontalAlignment="Left" Height="30" FontSize="16" Foreground="Black" FontFamily="Arial"/>
                 </Grid>
             </Grid>
         </materialDesign:Card>
