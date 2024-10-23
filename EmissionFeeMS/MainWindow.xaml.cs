@@ -137,48 +137,24 @@ namespace EmissionFeeMS
         {
             foreach (var s in data)
             {
+                using ApplicationContext context = new();
+                context.EmissionFees.Load();
                 CalcResult result = new()
                 {
                     Code = s[0],
-                    Title = s[1],
                     Mass = Convert.ToDouble(s[2]),
-                    Fee = GetFee(s[0])
                 };
-                result.Result = Math.Round(result.Mass * result.Fee, 2);
                 calcResults.Add(result);
             }
         }
 
-        private static double GetFee(string Code)
-        {
-            Dictionary<string, double> resultDict = [];
-            using (var context = new ApplicationContext())
-            {
-                var result = context.EmissionFees
-                    .Where(ef => ef.Code == Code)
-                    .Select(ef => new
-                    {
-                        ef.Code,
-                        ef.Title,
-                        FeeRes = context.FeeTaxes
-                                        .Where(ft => ft.Pollutant.Contains(ef.Code))
-                                        .Select(ft => ft.Fee)
-                                        .FirstOrDefault()
-                    })
-                    .ToList();
-
-                foreach (var item in result)
-                {
-                    resultDict["FeeRes"] = item.FeeRes;
-                }
-            }
-            return resultDict["FeeRes"];
-        }
-
-
         private void PrintCacl(object sender, RoutedEventArgs e)
         {
+            CalcResult calcResult = MainData.SelectedItem as CalcResult;
 
+            Trace.WriteLine(calcResult.Mass);
+            Trace.WriteLine(calcResult.Fee);
+            Trace.WriteLine(calcResult.Result);
         }
 
         private void AddSumCalc(object sender, RoutedEventArgs e)
@@ -189,16 +165,6 @@ namespace EmissionFeeMS
         private void DeleteItem(object sender, RoutedEventArgs e) => MainData.SelectedItems.OfType<CalcResult>().ToList().ForEach(item => calcResults.Remove(item));
         private void ClearDataGrid(object sender, RoutedEventArgs e) => calcResults.Clear();
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void OpenFile(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void MainData_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.V && Keyboard.IsKeyDown(Key.LeftCtrl))
@@ -207,7 +173,7 @@ namespace EmissionFeeMS
             }
             else if (e.Key == Key.C && Keyboard.IsKeyDown(Key.LeftCtrl))
             {
-                new MessageBoxCustom("asdasd", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                new MessageBoxCustom("ТУТ ПОКА НИЧЕГО НЕТ", MessageType.Success, MessageButtons.Ok).ShowDialog();
             }
         }
 
@@ -217,11 +183,25 @@ namespace EmissionFeeMS
         {
             if (MainData.CurrentCell.Column.Header.ToString() == "Mi, т")
                 MassCell.IsReadOnly = false;
+            else if ((MainData.CurrentCell.Column.Header.ToString()) == "Код вещества")
+            {
+                CalcResult v = MainData.SelectedItem as CalcResult;
+                if (v.Code is null)
+                {
+                    CodeCell.IsReadOnly = false;
+                }
+            }
         }
 
         private void MainData_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
             MassCell.IsReadOnly = true;
+            CodeCell.IsReadOnly = true;
+        }
+
+        private void AddNewRow(object sender, RoutedEventArgs e)
+        {
+            calcResults.Add(new CalcResult());
         }
 
 

@@ -100,7 +100,7 @@
                     </Button>
                     <Menu Style="{DynamicResource MaterialDesignMenu}" HorizontalAlignment="Left" Margin="10 15 10 10" FontFamily="{StaticResource FontAPP}" FontSize="20" VerticalAlignment="Top" Foreground="#FF27292B" Cursor="Arrow" Padding="0">
                         <MenuItem Header="Файл" Style="{DynamicResource MaterialDesignMenuItem}" FontFamily="{StaticResource FontAPP}">
-                            <MenuItem Header="Открыть..." Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon FileOutline}" HorizontalContentAlignment="Left" Click="OpenFile"/>
+                            <MenuItem Header="Открыть..." Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon FileOutline}" HorizontalContentAlignment="Left"/>
                             <MenuItem Header="Сохранить..." Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon ContentSaveOutline}" />
                             <MenuItem Header="Выйти" Click="CloseApp" Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon ExitToApp}"/>
                         </MenuItem>
@@ -124,7 +124,7 @@
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Код вещества" Width="3*" Binding="{Binding Code}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Код вещества" Width="3*" Binding="{Binding Code}" IsReadOnly="True" x:Name="CodeCell"/>
                             <DataGridTextColumn Header="Наименование вещества" Width="4*" Binding="{Binding Title}" IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style>
@@ -153,10 +153,10 @@
                     <Button Click="PrintCacl" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 130 0" ToolTip="Печать" Width="45" Height="45">
                         <materialDesign:PackIcon Kind="PrinterOutline" Width="45" Height="45" Foreground="#FF27292B"/>
                     </Button>
-                    <Button Click="AddSumCalc" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 185 0" ToolTip="Суммировать" Width="45" Height="45">
+                    <!--<Button Click="AddSumCalc" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 185 0" ToolTip="Суммировать" Width="45" Height="45">
                         <materialDesign:PackIcon Kind="Calculator" Width="45" Height="45" Foreground="#FF27292B"/>
-                    </Button>
-                    <Button Click="AddSumCalc" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 240 0" ToolTip="Добавить строку" Width="45" Height="45">
+                    </Button>-->
+                    <Button Click="AddNewRow" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 185 0" ToolTip="Добавить строку" Width="45" Height="45">
                         <materialDesign:PackIcon Kind="Add" Width="45" Height="45" Foreground="#FF27292B"/>
                     </Button>
                     <TextBox Style="{DynamicResource MaterialDesignTextBox}" Margin="20 0 0 0" Padding="5" Width="50" Background="White" HorizontalAlignment="Left" Height="30" FontSize="16" Foreground="Black" FontFamily="Arial"/>
