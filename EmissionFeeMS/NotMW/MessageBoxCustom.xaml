@@ -1,0 +1,84 @@
+﻿<Window x:Class="EmissionFeeMS.NotMW.MessageBoxCustom"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EmissionFeeMS.NotMW"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Height="200" Width="320"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        AllowsTransparency="True"
+        Background="Transparent"
+        >
+    <materialDesign:Card UniformCornerRadius="20" BorderBrush="#FF27292B" BorderThickness="1">
+
+        <Grid Background="#ecece7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="197*"/>
+                <ColumnDefinition Width="295*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <materialDesign:Card x:Name="cardHeader" Grid.Row="0" Padding="10" Margin="0" Background="#979392" Foreground="#FF27292B" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="cardHeader_MouseDown">
+                <StackPanel>
+                    <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignTitleTextBlock}" FontSize="20" >Message Title</TextBlock>
+                </StackPanel>
+            </materialDesign:Card>
+            <StackPanel  HorizontalAlignment="Right" Margin="0,5,5,0"  VerticalAlignment="Top" Grid.Column="1">
+                <Button x:Name="btnClose" Click="btnClose_Click" Width="35" Height="35"  Background="#979392" Foreground="{DynamicResource PrimaryHueDarkBrush}" Style="{StaticResource MaterialDesignIconButton}">
+                    <materialDesign:PackIcon Kind="Close" />
+                </Button>
+            </StackPanel>
+            <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <materialDesign:TransitioningContent>
+                            <TextBox x:Name="txtMessage" HorizontalAlignment="Center" IsReadOnly="True" Grid.Row="0" Margin="5" materialDesign:HintAssist.Hint="" FontSize="18" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                        </materialDesign:TransitioningContent>
+
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0,0,0,0" Background="#ecece7">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button x:Name="btnOk" Click="btnOk_Click" Grid.Column="1" Style="{StaticResource MaterialDesignIconButton}" Margin="5" Width="50" ToolTip="Ok">
+                            <materialDesign:PackIcon Kind="CheckBold" Foreground="#FF27292B"/>
+                        </Button>
+                        <Button x:Name="btnCancel" Click="btnCancel_Click" Grid.Column="2" Style="{StaticResource MaterialDesignIconButton}" Margin="5" Width="50" ToolTip="Cancel">
+                            <materialDesign:PackIcon Kind="CancelBold" Foreground="#FF27292B"/>
+                        </Button>
+                        <Button x:Name="btnYes" Click="btnYes_Click" Grid.Column="1" Style="{StaticResource MaterialDesignIconButton}" Margin="5" Width="50" ToolTip="Yes">
+                            <materialDesign:PackIcon Kind="CheckBold" Foreground="#FF27292B"/>
+                        </Button>
+                        <Button x:Name="btnNo" Click="btnNo_Click" Grid.Column="2" Style="{StaticResource MaterialDesignIconButton}" Margin="5" Width="50" ToolTip="No">
+                            <materialDesign:PackIcon Kind="CancelBold" Foreground="#FF27292B"/>
+                        </Button>
+                    </Grid>
+
+                </Grid>
+            </Grid>
+        </Grid>
+    </materialDesign:Card>
+
+</Window>

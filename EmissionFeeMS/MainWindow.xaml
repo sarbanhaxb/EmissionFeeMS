@@ -5,84 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:local="clr-namespace:EmissionFeeMS"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="800" Width="1000"
         WindowStartupLocation="CenterScreen"
         AllowsTransparency="True"
         WindowStyle="None"
         Background="Transparent"
+        KeyDown="MainData_KeyDown"        
         >
     <Window.Resources>
         <ResourceDictionary>
-            <DrawingImage x:Key="NormalScreenIconDrawingImage">
-                <DrawingImage.Drawing>
-                    <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M2,12C2,7.28595 2,4.92893 3.46447,3.46447 4.92893,2 7.28595,2 12,2 16.714,2 19.0711,2 20.5355,3.46447 22,4.92893 22,7.28595 22,12 22,16.714 22,19.0711 20.5355,20.5355 19.0711,22 16.714,22 12,22 7.28595,22 4.92893,22 3.46447,20.5355 2,19.0711 2,16.714 2,12z">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF27292B" Thickness="1.5" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M10.5,13.5L7.5,13.5 M10.5,13.5L10.5,16.5 M10.5,13.5L7,17">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF27292B" Thickness="1.5" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M13.5,10.5L16.5,10.5 M13.5,10.5L13.5,7.5 M13.5,10.5L17,7">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF27292B" Thickness="1.5" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                    </DrawingGroup>
-                </DrawingImage.Drawing>
-            </DrawingImage>
-            <DrawingImage x:Key="CollapseIconDrawingImage">
-                <DrawingImage.Drawing>
-                    <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M2,12C2,7.28595 2,4.92893 3.46447,3.46447 4.92893,2 7.28595,2 12,2 16.714,2 19.0711,2 20.5355,3.46447 22,4.92893 22,7.28595 22,12 22,16.714 22,19.0711 20.5355,20.5355 19.0711,22 16.714,22 12,22 7.28595,22 4.92893,22 3.46447,20.5355 2,19.0711 2,16.714 2,12z">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF27292B" Thickness="1.5" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M15,16.32L9,16.32">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF27292B" Thickness="1.5" StartLineCap="Round" EndLineCap="Round" LineJoin="Miter" MiterLimit="1" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                    </DrawingGroup>
-                </DrawingImage.Drawing>
-            </DrawingImage>
-            <DrawingImage x:Key="CloseIconDrawingImage">
-                <DrawingImage.Drawing>
-                    <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M2,12C2,7.28595 2,4.92893 3.46447,3.46447 4.92893,2 7.28595,2 12,2 16.714,2 19.0711,2 20.5355,3.46447 22,4.92893 22,7.28595 22,12 22,16.714 22,19.0711 20.5355,20.5355 19.0711,22 16.714,22 12,22 7.28595,22 4.92893,22 3.46447,20.5355 2,19.0711 2,16.714 2,12z">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF27292B" Thickness="1.5" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M14.5,9.50002L9.5,14.5 M9.49998,9.5L14.5,14.5">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF27292B" Thickness="1.5" StartLineCap="Round" EndLineCap="Round" LineJoin="Miter" MiterLimit="1" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                    </DrawingGroup>
-                </DrawingImage.Drawing>
-            </DrawingImage>
-            <DrawingImage x:Key="FullScreenIconDrawingImage">
-                <DrawingImage.Drawing>
-                    <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M2,12C2,7.28595 2,4.92893 3.46447,3.46447 4.92893,2 7.28595,2 12,2 16.714,2 19.0711,2 20.5355,3.46447 22,4.92893 22,7.28595 22,12 22,16.714 22,19.0711 20.5355,20.5355 19.0711,22 16.714,22 12,22 7.28595,22 4.92893,22 3.46447,20.5355 2,19.0711 2,16.714 2,12z">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF27292B" Thickness="1.5" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M17,7L14,7 M17,7L17,10 M17,7L13.5,10.5 M7,17L10,17 M7,17L7,14 M7,17L10.5,13.5">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF27292B" Thickness="1.5" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                    </DrawingGroup>
-                </DrawingImage.Drawing>
-            </DrawingImage>
+            <DataTemplate x:Key="EmissionFees"/>
+            <FontFamily x:Key="FontAPP">Fonts/#Commissioner-VariableFont_FLAR,VOLM,slnt,wght</FontFamily>
+            <FontFamily x:Key="FontRN">Fonts/#europecondensedc</FontFamily>
 
             <Style TargetType="Button" x:Key="PinkButtonStyle">
                 <Setter Property="Background" Value="#ecece7"/>
@@ -109,7 +45,7 @@
                 </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#e26e0e"/>
+                        <Setter Property="Background" Value="#979392"/>
                     </Trigger>
                     <Trigger Property="IsPressed" Value="True">
                         <Trigger.EnterActions>
@@ -141,9 +77,98 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
+
+
     <Grid>
+        <materialDesign:Card BorderBrush="#FF27292B" BorderThickness="1" UniformCornerRadius="20" Background="{x:Null}">
+            <Grid Cursor="Hand">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="15*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Background="#979392" Cursor="Arrow" MouseDown="Window_MouseDown">
+                    <Button Width="25" Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 25 10 10" Style="{DynamicResource MaterialDesignIconButton}" Cursor="Hand" Click="CloseApp" Foreground="#FF27292B">
+                        <materialDesign:PackIcon Kind="CloseThick"/>
+                    </Button>
+                    <Button Width="25" Height="25" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 25 40 10" Style="{DynamicResource MaterialDesignIconButton}" Cursor="Hand" Click="MinimizeMaximizeApp" Foreground="#FF27292B">
+                        <materialDesign:PackIcon x:Name="MinMaxIcon" Kind="WindowMaximize"/>
+                    </Button>
+                    <Button Width="25" Height="25" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 25 70 10" Style="{DynamicResource MaterialDesignIconButton}" Cursor="Hand" Click="MinimizeApp" Foreground="#FF27292B">
+                        <materialDesign:PackIcon Kind="WindowMinimize"/>
+                    </Button>
+                    <Menu Style="{DynamicResource MaterialDesignMenu}" HorizontalAlignment="Left" Margin="10 15 10 10" FontFamily="{StaticResource FontAPP}" FontSize="20" VerticalAlignment="Top" Foreground="#FF27292B" Cursor="Arrow" Padding="0">
+                        <MenuItem Header="Файл" Style="{DynamicResource MaterialDesignMenuItem}" FontFamily="{StaticResource FontAPP}">
+                            <MenuItem Header="Открыть..." Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon FileOutline}" HorizontalContentAlignment="Left" Click="OpenFile"/>
+                            <MenuItem Header="Сохранить..." Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon ContentSaveOutline}" />
+                            <MenuItem Header="Выйти" Click="CloseApp" Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon ExitToApp}"/>
+                        </MenuItem>
+                        <MenuItem Header="Справочник">
+                            <MenuItem Header="Справочник веществ" Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon ListBoxOutline}" Click="OpenEmissionFees"/>
+                            <MenuItem Header="Ставки платы за выбросы" Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon CoinsOutline}" Click="OpenFeeTaxes"/>
+                        </MenuItem>
+                        <MenuItem Header="О программе">
+                            <MenuItem Header="Настройки программы"  Cursor="Hand" Icon="{materialDesign:PackIcon SettingsOutline}"/>
+                            <MenuItem Header="Справка"  Cursor="Hand" Icon="{materialDesign:PackIcon AboutOutline}"/>
+                        </MenuItem>
+                    </Menu>
+                </Grid>
+                <Grid Grid.Row="1" Background="#ecece7" Cursor="Arrow">
+                    <DataGrid x:Name="MainData" Style="{DynamicResource MaterialDesignDataGrid}" Padding="5" CanUserAddRows="False" IsReadOnly="False" AutoGenerateColumns="False" Width="Auto" Margin="10" Background="Transparent" MouseDoubleClick="MainData_MouseDoubleClick" RowEditEnding="MainData_RowEditEnding">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu Style="{DynamicResource MaterialDesignContextMenu}">
+                                <MenuItem Header="Добавить строку" Icon="{materialDesign:PackIcon Kind=AddBold, Size=18}"/>
+                                <MenuItem Header="Удалить строку" Icon="{materialDesign:PackIcon Kind=DeleteOutline, Size=18}" Click="DeleteItem"/>
+                                <MenuItem Header="Вставить" Click="PasteButton" Icon="{materialDesign:PackIcon Kind=ContentPaste, Size=18}"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Код вещества" Width="3*" Binding="{Binding Code}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Наименование вещества" Width="4*" Binding="{Binding Title}" IsReadOnly="True">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style>
+                                        <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                                        <Setter Property="TextBlock.TextAlignment" Value="Left"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Mi, т" Width="2*" Binding="{Binding Mass}" IsReadOnly="True" x:Name="MassCell"/>
+                            <DataGridTextColumn Header="Ставка платы, руб./т" Width="3*" Binding="{Binding Fee}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="3*" Binding="{Binding Result}" IsReadOnly="True">
+                                <DataGridTextColumn.Header>
+                                    Плата за выброс, руб.
+                                </DataGridTextColumn.Header>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+                <Grid Grid.Row="2" Background="#979392" Cursor="Arrow">
+                    <Button Click="PasteButton" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 20 0" ToolTip="Вставить из буфера обмена">
+                        <materialDesign:PackIcon Kind="ContentPaste" Width="45" Height="45" Foreground="#FF27292B"/>
+                    </Button>
+                    <Button Click="ClearDataGrid" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 75 0" ToolTip="Очистить таблицу" Width="45" Height="45">
+                        <materialDesign:PackIcon Kind="FileDocumentDeleteOutline" Width="45" Height="45" Foreground="#FF27292B"/>
+                    </Button>
+                    <Button Click="PrintCacl" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 130 0" ToolTip="Печать" Width="45" Height="45">
+                        <materialDesign:PackIcon Kind="PrinterOutline" Width="45" Height="45" Foreground="#FF27292B"/>
+                    </Button>
+                    <Button Click="AddSumCalc" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 185 0" ToolTip="Суммировать" Width="45" Height="45">
+                        <materialDesign:PackIcon Kind="Calculator" Width="45" Height="45" Foreground="#FF27292B"/>
+                    </Button>
+                    <Button Click="AddSumCalc" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 240 0" ToolTip="Добавить строку" Width="45" Height="45">
+                        <materialDesign:PackIcon Kind="Add" Width="45" Height="45" Foreground="#FF27292B"/>
+                    </Button>
+                    <TextBox Style="{DynamicResource MaterialDesignTextBox}" Margin="20 0 0 0" Padding="5" Width="50" Background="White" HorizontalAlignment="Left" Height="30" FontSize="16" Foreground="Black" FontFamily="Arial"/>
+                    <TextBox Style="{DynamicResource MaterialDesignTextBox}" Margin="80 0 0 0" Padding="5" Width="50" Background="White" HorizontalAlignment="Left" Height="30" FontSize="16" Foreground="Black" FontFamily="Arial"/>
+                </Grid>
+            </Grid>
+        </materialDesign:Card>
+    </Grid>
+
+
+    <!--<Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1.5*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="8*"/>
             <RowDefinition Height="1*"/>
@@ -155,26 +180,40 @@
         </Grid.ColumnDefinitions>
 
         <Border Background="#ecece7" CornerRadius="20" Grid.RowSpan="10" Grid.ColumnSpan="10" BorderBrush="#979392" BorderThickness="2"/>
-        <StackPanel Grid.Row="0" Grid.ColumnSpan="5" HorizontalAlignment="Right" Margin="15" Width="Auto">
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="5" HorizontalAlignment="Stretch" Margin="15" Width="Auto" Background="Transparent">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="20*"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="30"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Style="{StaticResource PinkButtonStyle}" HorizontalAlignment="Left" Click="CollapseWindow" Width="Auto" Height="30" Margin="0">
+                <Menu VerticalAlignment="Top" Height="25" BorderBrush="#ecece7" Grid.Row="0" Grid.Column="0" Background="Transparent">
+                    <MenuItem Header="ФАЙЛ">
+                        <MenuItem Foreground="#FF27292B" Background="Transparent" Header="Открыть..." HorizontalAlignment="Left" />
+                        <MenuItem Foreground="#FF27292B" Background="Transparent" Header="Сохранить..."></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="СПРАВОЧНИК">
+                        <MenuItem Foreground="#FF27292B" Background="Transparent" Header="Справочник веществ" ></MenuItem>
+                        <MenuItem Foreground="#FF27292B" Background="Transparent"  Header="Ставки платы за выбросы загрязняющих веществ" ></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="СПРАВКА">
+                        <MenuItem Foreground="#FF27292B" Background="Transparent"  Header="О программе" ></MenuItem>
+                    </MenuItem>
+                </Menu>
+                <Button Grid.Column="1" Style="{StaticResource PinkButtonStyle}" HorizontalAlignment="Left" Click="CollapseWindow" Width="Auto" Height="30" Margin="0">
                     <Image Source="{StaticResource CollapseIconDrawingImage}"/>
                 </Button>
-                <Button Grid.Column="2" Style="{StaticResource PinkButtonStyle}" HorizontalAlignment="Right" Click="CloseWindow" Width="Auto" Height="30" Margin="0">
-                    <Image Source="{StaticResource CloseIconDrawingImage}"/>
-                </Button>
-                <Button Grid.Column="1" Style="{StaticResource PinkButtonStyle}" HorizontalAlignment="Center" Click="FullScreenWindow" Width="Auto" Height="30" x:Name="MinMaxButton" Margin="0">
+                <Button Grid.Column="2" Style="{StaticResource PinkButtonStyle}" HorizontalAlignment="Center" Click="FullScreenWindow" Width="Auto" Height="30" x:Name="MinMaxButton" Margin="0">
                     <Image Source="{StaticResource FullScreenIconDrawingImage}" x:Name="MinMaxImage"/>
                 </Button>
-            </Grid>
+                <Button Grid.Column="3" Style="{StaticResource PinkButtonStyle}" HorizontalAlignment="Right" Click="CloseWindow" Width="Auto" Height="30" Margin="0">
+                    <Image Source="{StaticResource CloseIconDrawingImage}"/>
+                </Button>
+            </Grid>-->
 
-        </StackPanel>
-    </Grid>
+    <!--</StackPanel>-->
+    <!--</Grid>-->
 
 
 

@@ -10,6 +10,16 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using MaterialDesignThemes;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
+using System.Collections.ObjectModel;
+using Microsoft.EntityFrameworkCore;
+using EmissionFeeMS.NotMW;
+using static MaterialDesignThemes.Wpf.Theme;
+using System.Data;
+using System.Text.RegularExpressions;
+
 
 namespace EmissionFeeMS
 {
@@ -18,36 +28,201 @@ namespace EmissionFeeMS
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly ObservableCollection<CalcResult> calcResults = [];
         public MainWindow()
         {
+            using ApplicationContext context = new();
+            //using ApplicationContextOLD contextOLD = new ApplicationContextOLD();
+            context.FeeTaxes.Load();
+            //contextOLD.feetaxes.Load();
+
+            //ObservableCollection<FeeTax> FT = context.FeeTaxes.Local.ToObservableCollection();
+            //ObservableCollection<FeeTax> FTold = contextOLD.feetaxes.Local.ToObservableCollection();
+
+            //foreach (FeeTax feeTax in FTold)
+            //{
+            //    Trace.WriteLine($"{feeTax.Pollutant} {feeTax.Title}");
+
+            //    feeTax.Fee = Math.Round(feeTax.Fee, 2 );
+            //    context.FeeTaxes.Add( feeTax );
+            //    context.SaveChanges();
+            //}
+
             InitializeComponent();
+            MainData.ItemsSource = calcResults;
+
         }
 
-        private void CollapseWindow(object sender, RoutedEventArgs e)
-        {
-            this.WindowState = WindowState.Minimized;
-        }
+        private void CloseApp(object sender, RoutedEventArgs e) => this.Close();
 
-        private void CloseWindow(object sender, RoutedEventArgs e)
+        private void MinimizeMaximizeApp(object sender, RoutedEventArgs e)
         {
-            this.Close();
-        }
-
-        private void FullScreenWindow(object sender, RoutedEventArgs e)
-        {
-            if (this.WindowState != WindowState.Maximized)
+            try
             {
-                this.MinMaxImage.Source = (ImageSource)this.Resources["NormalScreenIconDrawingImage"];
-                this.WindowState = WindowState.Maximized;
+                if (this.WindowState != WindowState.Maximized)
+                {
+                    MinMaxIcon.Kind = PackIconKind.WindowRestore;
+
+                    this.WindowState = WindowState.Maximized;
+                }
+                else
+                {
+                    this.WindowState = WindowState.Normal;
+                    MinMaxIcon.Kind = PackIconKind.WindowMaximize;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+        }
+
+        private void MinimizeApp(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
+
+        private void OpenEmissionFees(object sender, RoutedEventArgs e) => new EmissionFeesWindow().ShowDialog();
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
+        }
+
+        private void OpenFeeTaxes(object sender, RoutedEventArgs e) => new FeeTaxesWindow().ShowDialog();
+
+        private void PasteFromClipboard()
+        {
+
+            List<string[]> list = [];
+            var clip = Clipboard.GetText().Replace("\r", "");
+            string pattern = @"^\d{4}\t[А-Яа-я()a-zA-Z;/,0-9-:% ]+\t[а-яА-Я /\n]+\t[0-9,\ne-]+\t[0-9 ]\t[0-9,e-]+\t[0-9,]+\n";
+            string altPattern = @"^\d{4}\t[А-Яа-я()a-zA-Z;/,0-9-:% ]+\t[0-9.]+\t[0-9.]+\n";
+
+            Regex regex = new(pattern, RegexOptions.Multiline);
+            Regex altRegex = new(altPattern, RegexOptions.Multiline);
+            MatchCollection matches;
+
+            if (regex.IsMatch(clip))
+            {
+                matches = regex.Matches(clip);
+                foreach (Match match in matches)
+                {
+                    string[] s = match.Value.Split('\t');
+                    list.Add([s[0], s[1], s[6]]);
+                }
+                CalcResult(list);
+            }
+            else if (altRegex.IsMatch(clip))
+            {
+                matches = altRegex.Matches(clip);
+                foreach (Match match in matches)
+                {
+                    string[] s = match.Value.Split("\t");
+                    list.Add([s[0], s[1], s[3].Replace('.', ',')]);
+                }
+                CalcResult(list);
             }
             else
             {
-                this.MinMaxImage.Source = (ImageSource)this.Resources["FullScreenIconDrawingImage"];
-                this.WindowState = WindowState.Normal;
+                MessageBoxCustom messageBox = new("Некорректный формат данных", MessageType.Error, MessageButtons.Ok)
+                {
+                    Owner = this
+                };
+                messageBox.ShowDialog();
             }
         }
 
 
+        private void CalcResult(List<string[]> data)
+        {
+            foreach (var s in data)
+            {
+                CalcResult result = new()
+                {
+                    Code = s[0],
+                    Title = s[1],
+                    Mass = Convert.ToDouble(s[2]),
+                    Fee = GetFee(s[0])
+                };
+                result.Result = Math.Round(result.Mass * result.Fee, 2);
+                calcResults.Add(result);
+            }
+        }
+
+        private static double GetFee(string Code)
+        {
+            Dictionary<string, double> resultDict = [];
+            using (var context = new ApplicationContext())
+            {
+                var result = context.EmissionFees
+                    .Where(ef => ef.Code == Code)
+                    .Select(ef => new
+                    {
+                        ef.Code,
+                        ef.Title,
+                        FeeRes = context.FeeTaxes
+                                        .Where(ft => ft.Pollutant.Contains(ef.Code))
+                                        .Select(ft => ft.Fee)
+                                        .FirstOrDefault()
+                    })
+                    .ToList();
+
+                foreach (var item in result)
+                {
+                    resultDict["FeeRes"] = item.FeeRes;
+                }
+            }
+            return resultDict["FeeRes"];
+        }
+
+
+        private void PrintCacl(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddSumCalc(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteItem(object sender, RoutedEventArgs e) => MainData.SelectedItems.OfType<CalcResult>().ToList().ForEach(item => calcResults.Remove(item));
+        private void ClearDataGrid(object sender, RoutedEventArgs e) => calcResults.Clear();
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OpenFile(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MainData_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.V && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                PasteFromClipboard();
+            }
+            else if (e.Key == Key.C && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                new MessageBoxCustom("asdasd", MessageType.Success, MessageButtons.Ok).ShowDialog();
+            }
+        }
+
+        private void PasteButton(object sender, RoutedEventArgs e) => PasteFromClipboard();
+
+        private void MainData_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (MainData.CurrentCell.Column.Header.ToString() == "Mi, т")
+                MassCell.IsReadOnly = false;
+        }
+
+        private void MainData_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            MassCell.IsReadOnly = true;
+        }
 
 
         //public void LoadFromMS()
