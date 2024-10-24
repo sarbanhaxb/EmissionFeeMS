@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace EmissionFeeMS
 {
@@ -36,9 +38,9 @@ namespace EmissionFeeMS
         string? code;
         string? title;
         double mass;
-        double inflationCoeff = 1;
-        double _SGNTcoeff = 1;
-        double motivatingCoeff = 1;
+        double inflationCoeff = ApplicationProperty.AppProp.IsInflationCoeff ? ApplicationProperty.AppProp.InflationCoeff : 1;
+        double _SGNTcoeff = ApplicationProperty.AppProp.SGNTcoeff ? 2 : 1;
+        double motivatingCoeff = ApplicationProperty.AppProp.IsMotivationAccept ? new List<double>() {25, 100}[ApplicationProperty.AppProp.MotivatingCoeff] : 1;
         double fee;
         double result;
 
@@ -153,6 +155,7 @@ namespace EmissionFeeMS
         public string? Key { get; set; }
         public dynamic? Value { get; set; }
     }
+
     public class BoolOrDouble
     {
         public bool? BoolValue { get; set; }
@@ -171,4 +174,107 @@ namespace EmissionFeeMS
         }
     }
 
+    public class AppProperty : INotifyPropertyChanged
+    {
+        double _InflationCoeff;
+        bool _IsInflationCoeff;
+        bool _SGNTcoeff;
+        bool _NewCoeffAccept;
+        int _MotivatingCoeff;
+        bool _IsPrintedIfHaventFee;
+        bool _IsPrintedIfZero;
+        bool _IsMotivationAccept;
+        bool _IsPrintedWithCoeff;
+
+        public double InflationCoeff
+        {
+            get => _InflationCoeff;
+            set
+            {
+                _InflationCoeff = value;
+                OnPropertyChanged(nameof(InflationCoeff));
+            }
+        }
+        public bool IsInflationCoeff
+        {
+            get => _IsInflationCoeff; set
+            {
+                _IsInflationCoeff = value;
+                OnPropertyChanged(nameof(IsInflationCoeff));
+            }
+        }
+        public bool SGNTcoeff
+        {
+            get => _SGNTcoeff; set
+            {
+                _SGNTcoeff = value;
+                OnPropertyChanged(nameof(SGNTcoeff));
+            }
+        }
+        public bool NewCoeffAccept
+        {
+            get => _NewCoeffAccept; set
+            {
+                _NewCoeffAccept = value;
+                OnPropertyChanged(nameof(NewCoeffAccept));
+            }
+        }
+        public int MotivatingCoeff
+        {
+            get => _MotivatingCoeff;
+            set
+            {
+                _MotivatingCoeff = value;
+                OnPropertyChanged(nameof(MotivatingCoeff));
+            }
+        }
+        public bool IsPrintedIfHaventFee
+        {
+            get => _IsPrintedIfHaventFee; set
+            {
+                _IsPrintedIfHaventFee = value;
+                OnPropertyChanged(nameof(IsPrintedIfHaventFee));
+            }
+        }
+        public bool IsPrintedIfZero
+        {
+            get => _IsPrintedIfZero;
+            set
+            {
+                _IsPrintedIfZero = value;
+                OnPropertyChanged(nameof(IsPrintedIfZero));
+            }
+        }
+        public bool IsMotivationAccept
+        {
+            get => _IsMotivationAccept;
+            set
+            {
+                _IsMotivationAccept = value;
+                OnPropertyChanged(nameof(IsMotivationAccept));
+            }
+        }
+        public bool IsPrintedWithCoeff
+        {
+            get => IsPrintedIfHaventFee;
+            set
+            {
+                _IsPrintedWithCoeff = value;
+                OnPropertyChanged(nameof(IsPrintedIfHaventFee));
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public static class ApplicationProperty
+    {
+        public static AppProperty AppProp = Load();
+        public static void Save() => File.WriteAllText("AppProperty", JsonSerializer.Serialize(AppProp));
+        public static AppProperty Load() => JsonSerializer.Deserialize<AppProperty>(new FileStream("AppProperty", FileMode.OpenOrCreate));
+    }
 }

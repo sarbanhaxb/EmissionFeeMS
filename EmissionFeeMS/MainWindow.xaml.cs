@@ -19,6 +19,8 @@ using EmissionFeeMS.NotMW;
 using static MaterialDesignThemes.Wpf.Theme;
 using System.Data;
 using System.Text.RegularExpressions;
+using System.Text.Json;
+using System.IO;
 
 
 namespace EmissionFeeMS
@@ -29,8 +31,6 @@ namespace EmissionFeeMS
     public partial class MainWindow : Window
     {
         private readonly ObservableCollection<CalcResult> calcResults = [];
-        private readonly Dictionary<string, dynamic> PropDict;
-
         public MainWindow()
         {
             using ApplicationContext context = new();
@@ -52,12 +52,21 @@ namespace EmissionFeeMS
 
             InitializeComponent();
             MainData.ItemsSource = calcResults;
-            try
-            {
-                PropDict = PropertyWindow.DeserializeDictionaryFromXml("PropDict");
-            }
-            catch { }
+            DataContext = ApplicationProperty.AppProp;
+            ShowCoeffColumn();
+        }
 
+        private void ShowCoeffColumn()
+        {
+            InflationCoeffColumn.Visibility = ApplicationProperty.AppProp.IsInflationCoeff ? Visibility.Visible : Visibility.Hidden;
+            SGNTcoeffColumn.Visibility = ApplicationProperty.AppProp.SGNTcoeff ? Visibility.Visible : Visibility.Hidden;
+            MotivatingCoeffColumn.Visibility = ApplicationProperty.AppProp.IsMotivationAccept ? Visibility.Visible : Visibility.Hidden;
+            foreach (CalcResult calcResult in calcResults)
+            {
+                calcResult.InflationCoeff = ApplicationProperty.AppProp.IsInflationCoeff ? ApplicationProperty.AppProp.InflationCoeff : 1;
+                calcResult.SGNTcoeff = ApplicationProperty.AppProp.SGNTcoeff ? 2 : 1;
+                calcResult.MotivatingCoeff = ApplicationProperty.AppProp.IsMotivationAccept ? new List<double>() { 25, 100 }[ApplicationProperty.AppProp.MotivatingCoeff] : 1;
+            }
         }
 
         private void CloseApp(object sender, RoutedEventArgs e) => this.Close();
@@ -133,7 +142,7 @@ namespace EmissionFeeMS
         }
 
 
-        private void CalcResult(List<string[]> data) => data.ForEach(item => calcResults.Add(new CalcResult() { Code = item[0], Mass = Convert.ToDouble(item[2]) }));
+        private void CalcResult(List<string[]> data) => data.ForEach(item => calcResults.Add(new CalcResult() { Code = item[0], Mass = Convert.ToDouble(item[2])}));
 
         private void PrintCacl(object sender, RoutedEventArgs e)
         {
@@ -193,49 +202,7 @@ namespace EmissionFeeMS
 
         private void IsChecked(object sender, RoutedEventArgs e)
         {
-            System.Windows.Controls.CheckBox selectedCheckBox = (System.Windows.Controls.CheckBox)sender;
-            switch (selectedCheckBox.Name.ToString())
-            {
-                case "InflationCoeffCB":
-                    if ((bool)selectedCheckBox.IsChecked)
-                    {
-                        InflationCoeffColumn.Visibility = Visibility.Visible;
-                        foreach (var item in calcResults)
-                        {
-                            
-                            item.InflationCoeff = 0;
-                        }
-                    }
-                    else
-                    {
-                        InflationCoeffColumn.Visibility = Visibility.Hidden;
-                        foreach (var item in calcResults)
-                        {
-                            item.InflationCoeff = 1;
-                        }
-                    }
-                    break;
-                case "SGNTcoeffCB":
-                    if ((bool)selectedCheckBox.IsChecked)
-                    {
-                        SGNTcoeffColumn.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        SGNTcoeffColumn.Visibility = Visibility.Hidden;
-                    }
-                    break;
-                case "MotivatingCoeffCB":
-                    if ((bool)selectedCheckBox.IsChecked)
-                    {
-                        MotivatingCoeffColumn.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        MotivatingCoeffColumn.Visibility = Visibility.Hidden;
-                    }
-                    break;
-            }
+            ShowCoeffColumn();
         }
 
 
