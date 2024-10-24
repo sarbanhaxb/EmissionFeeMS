@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +15,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
+using System.IO;
+using System.Collections.ObjectModel;
 
 namespace EmissionFeeMS.NotMW
 {
@@ -22,25 +26,29 @@ namespace EmissionFeeMS.NotMW
     /// </summary>
     public partial class PropertyWindow : Window
     {
+        private readonly Dictionary<string, dynamic> PropDict;
         public PropertyWindow()
         {
             InitializeComponent();
-            using ApplicationContext applicationContext = new ApplicationContext();
-            applicationContext.COEFFICIENT.Load();
-
-            InflationCoeff.Text = Convert.ToString(applicationContext.COEFFICIENT.Where(x => x.Title == "inflationCoeff").Select(x => x.Value).FirstOrDefault());
-            SGNTcoeff.IsChecked = Convert.ToBoolean(applicationContext.COEFFICIENT.Where(x => x.Title == "SGNTcoeff").Select((x) => x.Value).FirstOrDefault());
-            newCoeffAccept.IsChecked = Convert.ToBoolean(applicationContext.COEFFICIENT.Where(x => x.Title == "newCoeffAccept").Select((x) => x.Value).FirstOrDefault());
-            ComboBoxItem comboBoxItem = new();
-            switch (Convert.ToString(applicationContext.COEFFICIENT.Where(x => x.Title == "MotivatingCoeff").Select(x => x.Value).FirstOrDefault()))
+            try
             {
-                case "25":
-                    MotivatingCoeff.SelectedIndex = 0;
-                    break;
-                case "100":
-                    MotivatingCoeff.SelectedIndex = 1;
-                    break;
+                PropDict = DeserializeDictionaryFromXml("PropDict");
             }
+            catch (System.IO.FileNotFoundException ex)
+            {
+                PropDict = new Dictionary<string, dynamic>() { 
+                    { "inflationCoeff", 1.32f }, 
+                    { "SGNTcoeff", true }, 
+                    { "newCoeffAccept", true }, 
+                    { "MotivatingCoeff", 0 },
+                    { "IsPrintedIfHaventFee", true },
+                    { "IsPrintedIfZero", true },
+                    {"IsMotivationAccept", true },
+                    {"isInflationCoeff", true},
+                    {"IsPrintedWithCoeff", true }
+                };
+            }
+            DataContext = PropDict;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -51,52 +59,54 @@ namespace EmissionFeeMS.NotMW
 
         private void CloseApp(object sender, RoutedEventArgs e) => this.Close();
 
-        private void MinimizeMaximizeApp(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (this.WindowState != WindowState.Maximized)
-                {
-                    MinMaxIcon.Kind = PackIconKind.WindowRestore;
-
-                    this.WindowState = WindowState.Maximized;
-                }
-                else
-                {
-                    this.WindowState = WindowState.Normal;
-                    MinMaxIcon.Kind = PackIconKind.WindowMaximize;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-        }
-
         private void MinimizeApp(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
 
         private void SaveDataChange(object sender, RoutedEventArgs e)
         {
-            using ApplicationContext applicationContext = new ApplicationContext();
-            applicationContext.COEFFICIENT.Load();
+            PropDict["inflationCoeff"] = InflationCoeff.Text;
+            PropDict["SGNTcoeff"] = SGNTcoeff.IsChecked;
+            PropDict["newCoeffAccept"] = newCoeffAccept.IsChecked;
+            PropDict["MotivatingCoeff"] = MotivatingCoeff.SelectedIndex;
+            PropDict["IsPrintedIfHaventFee"] = IsPrintedIfHaventFee.IsChecked;
+            PropDict["IsPrintedIfZero"] = IsPrintedIfZero.IsChecked;
+            PropDict["IsMotivationAccept"] = IsMotivationAccept.IsChecked;
+            PropDict["isInflationCoeff"] = isInflationCoeff.IsChecked;
+            PropDict["IsPrintedWithCoeff"] = IsPrintedWithCoeff.IsChecked;
 
-            var ELinflationCoeff = applicationContext.COEFFICIENT.Where(x => x.Title == "inflationCoeff").FirstOrDefault();
-            var ELSGNTcoeff = applicationContext.COEFFICIENT.Where(x => x.Title == "SGNTcoeff").FirstOrDefault();
-            var ELnewCoeffAccept = applicationContext.COEFFICIENT.Where(x => x.Title == "newCoeffAccept").FirstOrDefault();
-            var ELMotivatingCoeff = applicationContext.COEFFICIENT.Where(x => x.Title == "MotivatingCoeff").FirstOrDefault();
+            SerializeDictionaryToXml(PropDict, "PropDict");
+        }
 
-            ELinflationCoeff.Value = InflationCoeff.Text;
-            ELSGNTcoeff.Value = Convert.ToBoolean(SGNTcoeff.IsChecked) ? "true" : "false";
-            ELnewCoeffAccept.Value = Convert.ToBoolean(newCoeffAccept.IsChecked) ? "true" : "false";
-            ComboBoxItem v = MotivatingCoeff.SelectedItem as ComboBoxItem;
-            ELMotivatingCoeff.Value = v.Content.ToString();
-            applicationContext.Update(ELinflationCoeff);
-            applicationContext.Update(ELSGNTcoeff);
-            applicationContext.Update(ELnewCoeffAccept);
-            applicationContext.Update(ELMotivatingCoeff);
-            applicationContext.SaveChanges();
+        public static void SerializeDictionaryToXml(Dictionary<string, dynamic> dictionary, string filePath)
+        {
+            var xmlSerializer = new XmlSerializer(typeof(List<DataEntry>));
 
+            var dataEntries = new List<DataEntry>();
+            foreach (var kvp in dictionary)
+            {
+                dataEntries.Add(new DataEntry { Key = kvp.Key, Value = kvp.Value });
+            }
+
+            using (var writer = new StreamWriter(filePath))
+            {
+                xmlSerializer.Serialize(writer, dataEntries);
+            }
+        }
+        public static Dictionary<string, dynamic> DeserializeDictionaryFromXml(string filePath)
+        {
+            var xmlSerializer = new XmlSerializer(typeof(List<DataEntry>));
+
+            using (var reader = new StreamReader(filePath))
+            {
+                var dataEntries = (List<DataEntry>)xmlSerializer.Deserialize(reader);
+                var dictionary = new Dictionary<string, dynamic>();
+
+                foreach (var entry in dataEntries)
+                {
+                    dictionary[entry.Key] = entry.Value;
+                }
+
+                return dictionary;
+            }
         }
     }
 }

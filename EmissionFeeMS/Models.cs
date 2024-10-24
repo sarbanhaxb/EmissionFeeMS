@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace EmissionFeeMS
 {
+    public class PropDictiory : Dictionary<object, object>
+    {
+        public PropDictiory() { }
+    }
+
     public class EmissionFee
     {
         public int Id { get; set; }
@@ -110,5 +115,11 @@ namespace EmissionFeeMS
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    public class DataEntry
+    {
+        public string? Key { get; set; }
+        public dynamic? Value { get; set; }
     }
 }

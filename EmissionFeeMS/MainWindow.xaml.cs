@@ -158,8 +158,6 @@ namespace EmissionFeeMS
         {
             if (MainData.CurrentCell.Column != null)
             {
-                Trace.WriteLine(MainData.CurrentCell.Column.Header.ToString());
-
                 switch (MainData.CurrentCell.Column.Header.ToString())
                 {
                     case "Mi, т":
@@ -167,7 +165,7 @@ namespace EmissionFeeMS
                         break;
                     case "Код вещества":
                         var v = MainData.SelectedItem as CalcResult;
-                        /*if (v.Code is null) */CodeCell.IsReadOnly = false;
+                        CodeCell.IsReadOnly = false;
                         break;
                 }
             }

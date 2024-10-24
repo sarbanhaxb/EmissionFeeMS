@@ -11,7 +11,6 @@ namespace EmissionFeeMS
     {
         public DbSet<EmissionFee> EmissionFees { get; set; } = null!;
         public DbSet<FeeTax> FeeTaxes { get; set; } = null!;
-        public DbSet<Coeff> COEFFICIENT { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=database.db");
