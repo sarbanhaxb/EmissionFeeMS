@@ -8,11 +8,6 @@ using System.Threading.Tasks;
 
 namespace EmissionFeeMS
 {
-    public class PropDictiory : Dictionary<object, object>
-    {
-        public PropDictiory() { }
-    }
-
     public class EmissionFee
     {
         public int Id { get; set; }
@@ -41,6 +36,9 @@ namespace EmissionFeeMS
         string? code;
         string? title;
         double mass;
+        double inflationCoeff = 1;
+        double _SGNTcoeff = 1;
+        double motivatingCoeff = 1;
         double fee;
         double result;
 
@@ -83,6 +81,39 @@ namespace EmissionFeeMS
             }
         }
 
+        public double InflationCoeff
+        {
+            get => inflationCoeff;
+            set
+            {
+                inflationCoeff = value;
+                OnPropertyChanged(nameof(InflationCoeff));
+                OnPropertyChanged(nameof(Result));
+            }
+        }
+
+        public double SGNTcoeff
+        {
+            get => _SGNTcoeff;
+            set
+            {
+                _SGNTcoeff = value;
+                OnPropertyChanged(nameof(SGNTcoeff));
+                OnPropertyChanged(nameof(Result));
+            }
+        }
+
+        public double MotivatingCoeff
+        {
+            get => motivatingCoeff;
+            set
+            {
+                motivatingCoeff = value;
+                OnPropertyChanged(nameof(MotivatingCoeff));
+                OnPropertyChanged(nameof(Result));
+            }
+        }
+
         public double Fee
         {
             get
@@ -102,7 +133,7 @@ namespace EmissionFeeMS
         }
         public double Result
         {
-            get => Math.Round(Mass * Fee, 2);
+            get => Math.Round(Mass * Fee * InflationCoeff * SGNTcoeff * MotivatingCoeff, 2);
             private set
             {
                 result = value;
@@ -122,4 +153,22 @@ namespace EmissionFeeMS
         public string? Key { get; set; }
         public dynamic? Value { get; set; }
     }
+    public class BoolOrDouble
+    {
+        public bool? BoolValue { get; set; }
+        public double? DoubleValue { get; set; }
+
+        public BoolOrDouble(bool value)
+        {
+            BoolValue = value;
+            DoubleValue = null;
+        }
+
+        public BoolOrDouble(double value)
+        {
+            DoubleValue = value;
+            BoolValue = null;
+        }
+    }
+
 }

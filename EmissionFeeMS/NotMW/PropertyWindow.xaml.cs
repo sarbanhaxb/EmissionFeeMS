@@ -37,15 +37,15 @@ namespace EmissionFeeMS.NotMW
             catch (System.IO.FileNotFoundException ex)
             {
                 PropDict = new Dictionary<string, dynamic>() { 
-                    { "inflationCoeff", 1.32f }, 
+                    { "inflationCoeff", 1.32 }, 
                     { "SGNTcoeff", true }, 
                     { "newCoeffAccept", true }, 
                     { "MotivatingCoeff", 0 },
                     { "IsPrintedIfHaventFee", true },
-                    { "IsPrintedIfZero", true },
-                    {"IsMotivationAccept", true },
+                    { "IsPrintedIfZero", true},
+                    {"IsMotivationAccept", true},
                     {"isInflationCoeff", true},
-                    {"IsPrintedWithCoeff", true }
+                    {"IsPrintedWithCoeff", true}
                 };
             }
             DataContext = PropDict;
@@ -64,14 +64,14 @@ namespace EmissionFeeMS.NotMW
         private void SaveDataChange(object sender, RoutedEventArgs e)
         {
             PropDict["inflationCoeff"] = InflationCoeff.Text;
-            PropDict["SGNTcoeff"] = SGNTcoeff.IsChecked;
-            PropDict["newCoeffAccept"] = newCoeffAccept.IsChecked;
+            PropDict["SGNTcoeff"] = Convert.ToBoolean(SGNTcoeff.IsChecked);
+            PropDict["newCoeffAccept"] = Convert.ToBoolean(newCoeffAccept.IsChecked);
             PropDict["MotivatingCoeff"] = MotivatingCoeff.SelectedIndex;
-            PropDict["IsPrintedIfHaventFee"] = IsPrintedIfHaventFee.IsChecked;
-            PropDict["IsPrintedIfZero"] = IsPrintedIfZero.IsChecked;
-            PropDict["IsMotivationAccept"] = IsMotivationAccept.IsChecked;
-            PropDict["isInflationCoeff"] = isInflationCoeff.IsChecked;
-            PropDict["IsPrintedWithCoeff"] = IsPrintedWithCoeff.IsChecked;
+            PropDict["IsPrintedIfHaventFee"] = Convert.ToBoolean(IsPrintedIfHaventFee.IsChecked);
+            PropDict["IsPrintedIfZero"] = Convert.ToBoolean(IsPrintedIfZero.IsChecked);
+            PropDict["IsMotivationAccept"] = Convert.ToBoolean(IsMotivationAccept.IsChecked);
+            PropDict["isInflationCoeff"] = Convert.ToBoolean(isInflationCoeff.IsChecked);
+            PropDict["IsPrintedWithCoeff"] = Convert.ToBoolean(IsPrintedWithCoeff.IsChecked);
 
             SerializeDictionaryToXml(PropDict, "PropDict");
         }

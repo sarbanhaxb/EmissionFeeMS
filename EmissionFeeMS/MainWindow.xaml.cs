@@ -29,6 +29,8 @@ namespace EmissionFeeMS
     public partial class MainWindow : Window
     {
         private readonly ObservableCollection<CalcResult> calcResults = [];
+        private readonly Dictionary<string, dynamic> PropDict;
+
         public MainWindow()
         {
             using ApplicationContext context = new();
@@ -50,6 +52,11 @@ namespace EmissionFeeMS
 
             InitializeComponent();
             MainData.ItemsSource = calcResults;
+            try
+            {
+                PropDict = PropertyWindow.DeserializeDictionaryFromXml("PropDict");
+            }
+            catch { }
 
         }
 
@@ -183,6 +190,53 @@ namespace EmissionFeeMS
         }
 
         private void OpenPropertyWindows(object sender, RoutedEventArgs e) => new PropertyWindow().ShowDialog();
+
+        private void IsChecked(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.CheckBox selectedCheckBox = (System.Windows.Controls.CheckBox)sender;
+            switch (selectedCheckBox.Name.ToString())
+            {
+                case "InflationCoeffCB":
+                    if ((bool)selectedCheckBox.IsChecked)
+                    {
+                        InflationCoeffColumn.Visibility = Visibility.Visible;
+                        foreach (var item in calcResults)
+                        {
+                            
+                            item.InflationCoeff = 0;
+                        }
+                    }
+                    else
+                    {
+                        InflationCoeffColumn.Visibility = Visibility.Hidden;
+                        foreach (var item in calcResults)
+                        {
+                            item.InflationCoeff = 1;
+                        }
+                    }
+                    break;
+                case "SGNTcoeffCB":
+                    if ((bool)selectedCheckBox.IsChecked)
+                    {
+                        SGNTcoeffColumn.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        SGNTcoeffColumn.Visibility = Visibility.Hidden;
+                    }
+                    break;
+                case "MotivatingCoeffCB":
+                    if ((bool)selectedCheckBox.IsChecked)
+                    {
+                        MotivatingCoeffColumn.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        MotivatingCoeffColumn.Visibility = Visibility.Hidden;
+                    }
+                    break;
+            }
+        }
 
 
         //public void LoadFromMS()
