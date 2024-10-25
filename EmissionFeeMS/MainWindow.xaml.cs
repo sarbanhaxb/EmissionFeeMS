@@ -21,7 +21,10 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.IO;
-
+using Microsoft.Win32;
+using DocumentFormat.OpenXml.Bibliography;
+using Aspose.Cells;
+using Aspose.Words;
 
 namespace EmissionFeeMS
 {
@@ -56,7 +59,7 @@ namespace EmissionFeeMS
             ShowCoeffColumn();
         }
 
-        private void ShowCoeffColumn()
+        public void ShowCoeffColumn()
         {
             InflationCoeffColumn.Visibility = ApplicationProperty.AppProp.IsInflationCoeff ? Visibility.Visible : Visibility.Hidden;
             SGNTcoeffColumn.Visibility = ApplicationProperty.AppProp.SGNTcoeff ? Visibility.Visible : Visibility.Hidden;
@@ -142,10 +145,11 @@ namespace EmissionFeeMS
         }
 
 
-        private void CalcResult(List<string[]> data) => data.ForEach(item => calcResults.Add(new CalcResult() { Code = item[0], Mass = Convert.ToDouble(item[2])}));
+        private void CalcResult(List<string[]> data) => data.ForEach(item => calcResults.Add(new CalcResult() { Code = item[0], Mass = Convert.ToDouble(item[2]) }));
 
         private void PrintCacl(object sender, RoutedEventArgs e)
         {
+
         }
 
         private void AddSumCalc(object sender, RoutedEventArgs e)
@@ -193,18 +197,119 @@ namespace EmissionFeeMS
             CodeCell.IsReadOnly = true;
         }
 
-        private void AddNewRow(object sender, RoutedEventArgs e)
-        {
-            calcResults.Add(new CalcResult());
-        }
+        private void AddNewRow(object sender, RoutedEventArgs e) => calcResults.Add(new CalcResult());
 
-        private void OpenPropertyWindows(object sender, RoutedEventArgs e) => new PropertyWindow().ShowDialog();
+        private void OpenPropertyWindows(object sender, RoutedEventArgs e) => new PropertyWindow(this).ShowDialog();
 
         private void IsChecked(object sender, RoutedEventArgs e)
         {
-            ShowCoeffColumn();
+            System.Windows.Controls.CheckBox senderCB = (System.Windows.Controls.CheckBox)sender;
+            switch (senderCB.Name)
+            {
+                case "InflationCoeffCB":
+                    InflationCoeffColumn.Visibility = (bool)senderCB.IsChecked ? Visibility.Visible : Visibility.Hidden;
+                    foreach (CalcResult calcResult in calcResults)
+                    {
+                        calcResult.InflationCoeff = (bool)senderCB.IsChecked ? ApplicationProperty.AppProp.InflationCoeff : 1;
+                    }
+                    break;
+                case "SGNTcoeffCB":
+                    SGNTcoeffColumn.Visibility = (bool)senderCB.IsChecked ? Visibility.Visible : Visibility.Hidden;
+                    foreach (CalcResult calcResult in calcResults)
+                    {
+                        calcResult.SGNTcoeff = (bool)senderCB.IsChecked ? 2 : 1;
+                    }
+                    break;
+                case "MotivatingCoeffCB":
+                    MotivatingCoeffColumn.Visibility = (bool)senderCB.IsChecked ? Visibility.Visible : Visibility.Hidden;
+                    foreach (CalcResult calcResult in calcResults)
+                    {
+                        calcResult.MotivatingCoeff = (bool)senderCB.IsChecked ? new List<double>() { 25, 100 }[(bool)senderCB.IsChecked ? 1 : 0] : 1;
+                    }
+                    break;
+            }
         }
 
+        private void FileOpen_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                DefaultExt = ".xls",
+                Filter = "Файл xls (*.xls)|*.xls|Файлы rtf(*.RTF)|*.RTF"
+            };
+
+            Nullable<bool> result = openFileDialog.ShowDialog();
+            if (result != false)
+            {
+                LoadFeeTable(openFileDialog.FileName);
+            }
+        }
+
+        private void LoadFeeTable(string PATH)
+        {
+            if (System.IO.Path.GetExtension(PATH).ToUpperInvariant() == ".XLS")
+            {
+                //Workbook wb = new Workbook(PATH);
+                //WorksheetCollection collestion = wb.Worksheets;
+                //Worksheet ws = collestion[0];
+                //double sum = 0;
+                //int rows = ws.Cells.MaxDataRow;
+
+                //for (int i = 0; i < rows; i++)
+                //{
+                //    if (SQLquery.CheckContainsPillutant(Convert.ToString(ws.Cells[i, 0].Value)))
+                //    {
+                //        string polNum = Convert.ToString(ws.Cells[i, 0].Value);
+                //        string polTitle = Convert.ToString(ws.Cells[i, 1].Value);
+                //        double polMass = Convert.ToDouble(ws.Cells[i, 6].Value);
+                //        ResultTableElement El = new ResultTableElement();
+
+                //        El.PollutantNumber = polNum;
+                //        El.PollutantTitle = polTitle;
+                //        El.PollutantMass = polMass;
+                //        El.PollutantFee = SQLquery.GetFee(El.PollutantNumber);
+                //        El.ExCoeff = Convert.ToInt32(ExCoefTextBox.Text);
+                //        El.Coeff = Convert.ToDouble(ExYearCoefTextBox.Text);
+
+                //        sum += El.Sum;
+
+                //        resultTables.Add(El);
+                //    }
+                //}
+                //TableFee.ItemsSource = resultTables;
+                //MenuSaveCalc.IsEnabled = true;
+                //SumTextBlock.Text = Convert.ToString(sum);
+            }
+            else if (System.IO.Path.GetExtension(PATH)
+                                   .ToUpperInvariant() == ".RTF")
+            {
+                try
+                {
+                    Aspose.Words.Document document = new Aspose.Words.Document(PATH);
+                    NodeCollection tables = document.GetChildNodes(NodeType.Table, true);
+                    Aspose.Words.Tables.Table table = (Aspose.Words.Tables.Table)tables[0];
+                    for (int i = 0; i < table.Rows.Count; i++)
+                    {
+                        string curCode = table.Rows[i].Cells[0].GetText().Trim('\a');
+                        Regex regex = new(@"^\d{4}", RegexOptions.Multiline);
+                        MatchCollection matches;
+                        if (regex.IsMatch(curCode))
+                        {
+                            matches = regex.Matches(curCode);
+                            foreach (Match match in matches)
+                            {
+                                string s = match.Value;
+                                calcResults.Add(new CalcResult() { Code = match.Value, Mass = Convert.ToDouble(table.Rows[i].Cells[3].GetText().Trim('\a').Replace('.', ',')) });
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    new MessageBoxCustom($"Формат данных в файле не найден", MessageType.Error, MessageButtons.Ok).ShowDialog();
+                }
+            }
+        }
 
         //public void LoadFromMS()
         //{

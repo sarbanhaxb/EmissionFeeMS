@@ -26,11 +26,23 @@ namespace EmissionFeeMS.NotMW
     /// </summary>
     public partial class PropertyWindow : Window
     {
-        public PropertyWindow()
+        MainWindow Parent;
+        public PropertyWindow(MainWindow window)
         {
             InitializeComponent();
-            
-            DataContext = ApplicationProperty.AppProp;
+
+            Parent = window;
+
+            InflationCoeff.Text = Convert.ToString(ApplicationProperty.AppProp.InflationCoeff);
+            isInflationCoeff.IsChecked = ApplicationProperty.AppProp.IsInflationCoeff;
+            newCoeffAccept.IsChecked = ApplicationProperty.AppProp.NewCoeffAccept;
+            IsMotivationAccept.IsChecked = ApplicationProperty.AppProp.IsMotivationAccept;
+            MotivatingCoeff.SelectedIndex = ApplicationProperty.AppProp.MotivatingCoeff;
+            SGNTcoeff.IsChecked = ApplicationProperty.AppProp.SGNTcoeff;
+
+            IsPrintedIfHaventFee.IsChecked = ApplicationProperty.AppProp.IsPrintedIfHaventFee;
+            IsPrintedIfZero.IsChecked = ApplicationProperty.AppProp.IsPrintedIfZero;
+            IsPrintedWithCoeff.IsChecked = ApplicationProperty.AppProp.IsPrintedWithCoeff;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -45,6 +57,18 @@ namespace EmissionFeeMS.NotMW
 
         private void SaveDataChange(object sender, RoutedEventArgs e)
         {
+            ApplicationProperty.AppProp.InflationCoeff = Convert.ToDouble(InflationCoeff.Text.Replace(".", ","));
+            ApplicationProperty.AppProp.IsInflationCoeff = (bool)isInflationCoeff.IsChecked;
+            ApplicationProperty.AppProp.NewCoeffAccept = (bool)newCoeffAccept.IsChecked;
+            ApplicationProperty.AppProp.IsMotivationAccept = (bool)IsMotivationAccept.IsChecked;
+            ApplicationProperty.AppProp.MotivatingCoeff = MotivatingCoeff.SelectedIndex;
+            ApplicationProperty.AppProp.SGNTcoeff = (bool)SGNTcoeff.IsChecked;
+
+            ApplicationProperty.AppProp.IsPrintedIfHaventFee = (bool)IsPrintedIfHaventFee.IsChecked;
+            ApplicationProperty.AppProp.IsPrintedIfZero = (bool)IsPrintedIfZero.IsChecked;
+            ApplicationProperty.AppProp.IsPrintedWithCoeff = (bool)IsPrintedWithCoeff.IsChecked;
+
+            Parent.ShowCoeffColumn();
             ApplicationProperty.Save();
         }
     }

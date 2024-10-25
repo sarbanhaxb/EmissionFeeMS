@@ -40,7 +40,7 @@ namespace EmissionFeeMS
         double mass;
         double inflationCoeff = ApplicationProperty.AppProp.IsInflationCoeff ? ApplicationProperty.AppProp.InflationCoeff : 1;
         double _SGNTcoeff = ApplicationProperty.AppProp.SGNTcoeff ? 2 : 1;
-        double motivatingCoeff = ApplicationProperty.AppProp.IsMotivationAccept ? new List<double>() {25, 100}[ApplicationProperty.AppProp.MotivatingCoeff] : 1;
+        double motivatingCoeff = ApplicationProperty.AppProp.IsMotivationAccept ? new List<double>() { 25, 100 }[ApplicationProperty.AppProp.MotivatingCoeff] : 1;
         double fee;
         double result;
 
