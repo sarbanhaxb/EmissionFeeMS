@@ -1,30 +1,11 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using Aspose.Words;
+using EmissionFeeMS.EmissionFeesMVVM;
+using EmissionFeeMS.SettingsMVVM;
+using Microsoft.Win32;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
-using MaterialDesignThemes;
-using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
-using System.Collections.ObjectModel;
-using Microsoft.EntityFrameworkCore;
-using EmissionFeeMS.NotMW;
-using static MaterialDesignThemes.Wpf.Theme;
-using System.Data;
-using System.Text.RegularExpressions;
-using System.Text.Json;
-using System.IO;
-using Microsoft.Win32;
-using DocumentFormat.OpenXml.Bibliography;
-using Aspose.Cells;
-using Aspose.Words;
 
 namespace EmissionFeeMS
 {
@@ -33,32 +14,12 @@ namespace EmissionFeeMS
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ObservableCollection<CalcResult> calcResults = [];
-        public Settings _settings = null;
-
         public MainWindow()
         {
-            using ApplicationContext context = new();
-            context.FeeTaxes.Load();
-            _settings = Settings.GetSettings();
-
             InitializeComponent();
-            MainData.ItemsSource = calcResults;
-            DataContext = _settings;
-            ShowCoeffColumn();
-        }
+            this.DataContext = new MainViewModel();
+            //NameScope.SetNameScope(ContxtMenu, NameScope.GetNameScope(this));
 
-        public void ShowCoeffColumn()
-        {
-            //InflationCoeffColumn.Visibility = _settings.IsInflationCoeff;
-            //SGNTcoeffColumn.Visibility = _settings.SGNTcoeff;
-            //MotivatingCoeffColumn.Visibility = _settings.IsMotivationAccept;
-            foreach (CalcResult calcResult in calcResults)
-            {
-                calcResult.InflationCoeff = _settings.IsInflationCoeff == Visibility.Visible ? _settings.InflationCoeff : 1;
-                calcResult.SGNTcoeff = _settings.SGNTcoeff == Visibility.Visible ? 2 : 1;
-                calcResult.MotivatingCoeff = _settings.IsMotivationAccept == Visibility.Visible ? new List<double>() { 25, 100 }[_settings.MotivatingCoeff] : 1;
-            }
         }
 
         private void CloseApp(object sender, RoutedEventArgs e) => this.Close();
@@ -69,14 +30,14 @@ namespace EmissionFeeMS
             {
                 if (this.WindowState != WindowState.Maximized)
                 {
-                    MinMaxIcon.Kind = PackIconKind.WindowRestore;
+                    //MinMaxIcon.Kind = PackIconKind.WindowRestore;
 
                     this.WindowState = WindowState.Maximized;
                 }
                 else
                 {
                     this.WindowState = WindowState.Normal;
-                    MinMaxIcon.Kind = PackIconKind.WindowMaximize;
+                    //MinMaxIcon.Kind = PackIconKind.WindowMaximize;
                 }
             }
             catch (Exception ex)
@@ -96,7 +57,7 @@ namespace EmissionFeeMS
                 this.DragMove();
         }
 
-        private void OpenFeeTaxes(object sender, RoutedEventArgs e) => new FeeTaxesWindow().ShowDialog();
+        //private void OpenFeeTaxes(object sender, RoutedEventArgs e) => new FeeTaxesWindow().ShowDialog();
 
         private void PasteFromClipboard()
         {
@@ -134,20 +95,15 @@ namespace EmissionFeeMS
         }
 
 
-        private void CalcResult(List<string[]> data) => data.ForEach(item => calcResults.Add(new CalcResult() { Code = item[0], Mass = Convert.ToDouble(item[2]) }));
-
-        private void PrintCacl(object sender, RoutedEventArgs e)
+        private void CalcResult(List<string[]> data)
         {
-
+            //data.ForEach(item => calcResults.Add(new CalcResult() { Code = item[0], Mass = Convert.ToDouble(item[2]) }));
         }
 
-        private void AddSumCalc(object sender, RoutedEventArgs e)
+        private void ClearDataGrid(object sender, RoutedEventArgs e)
         {
-
+            //calcResults.Clear();
         }
-
-        private void DeleteItem(object sender, RoutedEventArgs e) => MainData.SelectedItems.OfType<CalcResult>().ToList().ForEach(item => calcResults.Remove(item));
-        private void ClearDataGrid(object sender, RoutedEventArgs e) => calcResults.Clear();
 
         private void MainData_KeyDown(object sender, KeyEventArgs e)
         {
@@ -165,37 +121,40 @@ namespace EmissionFeeMS
 
         private void MainData_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (MainData.CurrentCell.Column != null)
-            {
-                switch (MainData.CurrentCell.Column.Header.ToString())
-                {
-                    case "Mi, т":
-                        MassCell.IsReadOnly = false;
-                        break;
-                    case "Код вещества":
-                        var v = MainData.SelectedItem as CalcResult;
-                        CodeCell.IsReadOnly = false;
-                        break;
-                }
-            }
+            //if (MainData.CurrentCell.Column != null)
+            //{
+            //    switch (MainData.CurrentCell.Column.Header.ToString())
+            //    {
+            //        case "Mi, т":
+            //            MassCell.IsReadOnly = false;
+            //            break;
+            //        case "Код вещества":
+            //            var v = MainData.SelectedItem as CalcResult;
+            //            CodeCell.IsReadOnly = false;
+            //            break;
+            //    }
+            //}
         }
 
         private void MainData_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
-            MassCell.IsReadOnly = true;
-            CodeCell.IsReadOnly = true;
+            //MassCell.IsReadOnly = true;
+            //CodeCell.IsReadOnly = true;
         }
 
-        private void AddNewRow(object sender, RoutedEventArgs e) => calcResults.Add(new CalcResult());
+        private void AddNewRow(object sender, RoutedEventArgs e)
+        {
+            //calcResults.Add(new CalcResult());
+        }
 
         private void OpenPropertyWindows(object sender, RoutedEventArgs e)
         {
-            if ((bool)new PropertyWindow(this).ShowDialog())
-            {
-                _settings = Settings.GetSettings();
-                DataContext = _settings;
-                ShowCoeffColumn();
-            }
+            //if ((bool)new PropertyWindow(this).ShowDialog())
+            //{
+            //    _settings = Settings.GetSettings();
+            //    DataContext = _settings;
+            //    ShowCoeffColumn();
+            //}
         }
 
         private void IsChecked(object sender, RoutedEventArgs e)
@@ -296,7 +255,7 @@ namespace EmissionFeeMS
                             foreach (Match match in matches)
                             {
                                 string s = match.Value;
-                                calcResults.Add(new CalcResult() { Code = match.Value, Mass = Convert.ToDouble(table.Rows[i].Cells[3].GetText().Trim('\a').Replace('.', ',')) });
+                                //calcResults.Add(new CalcResult() { Code = match.Value, Mass = Convert.ToDouble(table.Rows[i].Cells[3].GetText().Trim('\a').Replace('.', ',')) });
                             }
                         }
                     }
@@ -307,5 +266,13 @@ namespace EmissionFeeMS
                 }
             }
         }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OpenMainSettings(object sender, RoutedEventArgs e) => new MainSettings(this).ShowDialog();
+
     }
 }

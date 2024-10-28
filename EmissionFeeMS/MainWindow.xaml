@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:local="clr-namespace:EmissionFeeMS"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1100"
         WindowStartupLocation="CenterScreen"
@@ -14,71 +14,9 @@
         Background="Transparent"
         KeyDown="MainData_KeyDown"        
         >
-    <Window.DataContext>
-        <local:Settings/>
-    </Window.DataContext>
     <Window.Resources>
-        <ResourceDictionary>
-            <DataTemplate x:Key="EmissionFees"/>
-            <FontFamily x:Key="FontAPP">Fonts/#Commissioner-VariableFont_FLAR,VOLM,slnt,wght</FontFamily>
-            <FontFamily x:Key="FontRN">Fonts/#europecondensedc</FontFamily>
-
-            <Style TargetType="Button" x:Key="PinkButtonStyle">
-                <Setter Property="Background" Value="#ecece7"/>
-                <Setter Property="Foreground" Value="#979392"/>
-                <Setter Property="FontSize" Value="16"/>
-                <Setter Property="Padding" Value="10,5"/>
-                <Setter Property="Margin" Value="10"/>
-                <Setter Property="BorderBrush" Value="Transparent"/>
-                <Setter Property="BorderThickness" Value="2"/>
-                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-                <Setter Property="RenderTransform">
-                    <Setter.Value>
-                        <ScaleTransform ScaleX="1" ScaleY="1"/>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border CornerRadius="10" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#979392"/>
-                    </Trigger>
-                    <Trigger Property="IsPressed" Value="True">
-                        <Trigger.EnterActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation 
-                                    Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
-                                    To="0.95" Duration="0:0:0.1"/>
-                                    <DoubleAnimation 
-                                    Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
-                                    To="0.95" Duration="0:0:0.1"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.EnterActions>
-                        <Trigger.ExitActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation 
-                                    Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
-                                    To="1" Duration="0:0:0.1"/>
-                                    <DoubleAnimation 
-                                    Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
-                                    To="1" Duration="0:0:0.1"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.ExitActions>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </ResourceDictionary>
+        <FontFamily x:Key="FontAPP">Fonts/#Commissioner-VariableFont_FLAR,VOLM,slnt,wght</FontFamily>
+        <FontFamily x:Key="FontRN">Fonts/#europecondensedc</FontFamily>
     </Window.Resources>
 
 
@@ -109,20 +47,20 @@
                         </MenuItem>
                         <MenuItem Header="Справочник">
                             <MenuItem Header="Справочник веществ" Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon ListBoxOutline}" Click="OpenEmissionFees"/>
-                            <MenuItem Header="Ставки платы за выбросы" Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon CoinsOutline}" Click="OpenFeeTaxes"/>
+                            <MenuItem Header="Ставки платы за выбросы" Cursor="Hand" FontFamily="{StaticResource FontAPP}" Icon="{materialDesign:PackIcon CoinsOutline}"/>
                         </MenuItem>
                         <MenuItem Header="О программе">
-                            <MenuItem Header="Настройки программы"  Cursor="Hand" Icon="{materialDesign:PackIcon SettingsOutline}" Click="OpenPropertyWindows"/>
+                            <MenuItem Header="Настройки программы"  Cursor="Hand" Icon="{materialDesign:PackIcon SettingsOutline}" Click="OpenMainSettings"/>
                             <MenuItem Header="Справка"  Cursor="Hand" Icon="{materialDesign:PackIcon AboutOutline}"/>
                         </MenuItem>
                     </Menu>
                 </Grid>
                 <Grid Grid.Row="1" Background="#ecece7" Cursor="Arrow">
-                    <DataGrid x:Name="MainData" Style="{DynamicResource MaterialDesignDataGrid}" Padding="5" CanUserAddRows="False" IsReadOnly="False" AutoGenerateColumns="False" Width="Auto" Margin="10" Background="Transparent" MouseDoubleClick="MainData_MouseDoubleClick" RowEditEnding="MainData_RowEditEnding">
+                    <DataGrid DisplayMemberPath="Model" SelectionMode="Extended" Name="MainData" ItemsSource="{Binding CalcResults}" Style="{DynamicResource MaterialDesignDataGrid}" Padding="5" CanUserAddRows="False" IsReadOnly="False" AutoGenerateColumns="False" Width="Auto" Margin="10" Background="Transparent" MouseDoubleClick="MainData_MouseDoubleClick" RowEditEnding="MainData_RowEditEnding">
                         <DataGrid.ContextMenu>
-                            <ContextMenu Style="{DynamicResource MaterialDesignContextMenu}">
-                                <MenuItem Header="Добавить строку" Icon="{materialDesign:PackIcon Kind=AddBold, Size=18}" Click="AddNewRow"/>
-                                <MenuItem Header="Удалить строку" Icon="{materialDesign:PackIcon Kind=DeleteOutline, Size=18}" Click="DeleteItem"/>
+                            <ContextMenu x:Name="ContxtMenu" Style="{DynamicResource MaterialDesignContextMenu}">
+                                <MenuItem Header="Добавить строку" Icon="{materialDesign:PackIcon Kind=AddBold, Size=18}" Command="{Binding AddCommand}"/>
+                                <MenuItem Header="Удалить строку" Icon="{materialDesign:PackIcon Kind=DeleteOutline, Size=18}" Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedItems, ElementName=MainData}"/>
                                 <MenuItem Header="Вставить" Click="PasteButton" Icon="{materialDesign:PackIcon Kind=ContentPaste, Size=18}"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
@@ -138,9 +76,9 @@
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Mi, т" Width="2*" Binding="{Binding Mass}" IsReadOnly="True" x:Name="MassCell"/>
                             <DataGridTextColumn Header="Ставка платы, руб./т" Width="3*" Binding="{Binding Fee}" IsReadOnly="True"/>
-                            <DataGridTextColumn x:Name="InflationCoeffColumn" Header="Ki" Width="1*" Binding="{Binding InflationCoeff}" IsReadOnly="True" Visibility="{Binding Path=IsInflationCoeff}"/>
-                            <DataGridTextColumn x:Name="MotivatingCoeffColumn" Header="Км" Width="1*" Binding="{Binding MotivatingCoeff}" IsReadOnly="True" Visibility="{Binding Path=IsMotivationAccept}"/>
-                            <DataGridTextColumn x:Name="SGNTcoeffColumn" Header="Kот" Width="1*" Binding="{Binding SGNTcoeff}" IsReadOnly="True" Visibility="{Binding Path=SGNTcoeff}"/>
+                            <DataGridTextColumn x:Name="InflationCoeffColumn" Header="Ki" Width="1*" Binding="{Binding InflationCoeff}" IsReadOnly="True"/>
+                            <DataGridTextColumn x:Name="MotivatingCoeffColumn" Header="Км" Width="1*" Binding="{Binding MotivatingCoeff}" IsReadOnly="True"/>
+                            <DataGridTextColumn x:Name="SGNTcoeffColumn" Header="Kот" Width="1*" Binding="{Binding SGNTcoeff}" IsReadOnly="True"/>
                             <DataGridTextColumn Width="3*" Binding="{Binding Result}" IsReadOnly="True">
                                 <DataGridTextColumn.Header>
                                     Плата за выброс, руб.
@@ -156,72 +94,20 @@
                     <Button Click="ClearDataGrid" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 75 0" ToolTip="Очистить таблицу" Width="45" Height="45">
                         <materialDesign:PackIcon Kind="FileDocumentDeleteOutline" Width="45" Height="45" Foreground="#FF27292B"/>
                     </Button>
-                    <Button Click="PrintCacl" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 130 0" ToolTip="Печать" Width="45" Height="45">
+                    <Button Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 130 0" ToolTip="Печать" Width="45" Height="45">
                         <materialDesign:PackIcon Kind="PrinterOutline" Width="45" Height="45" Foreground="#FF27292B"/>
                     </Button>
                     <!--<Button Click="AddSumCalc" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 185 0" ToolTip="Суммировать" Width="45" Height="45">
                         <materialDesign:PackIcon Kind="Calculator" Width="45" Height="45" Foreground="#FF27292B"/>
                     </Button>-->
-                    <Button Click="AddNewRow" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 185 0" ToolTip="Добавить строку" Width="45" Height="45">
+                    <Button Command="{Binding AddCommand}" Style="{DynamicResource MaterialDesignIconButton}" HorizontalAlignment="Right" Margin="0 0 185 0" ToolTip="Добавить строку" Width="45" Height="45">
                         <materialDesign:PackIcon Kind="Add" Width="45" Height="45" Foreground="#FF27292B"/>
                     </Button>
-                    <CheckBox x:Name="InflationCoeffCB" IsChecked="{Binding IsInflationCoeff}" Style="{DynamicResource MaterialDesignActionCheckBox}" Margin="50 0" HorizontalAlignment="Left" Click="IsChecked" Cursor=""/>
+                    <CheckBox x:Name="InflationCoeffCB" IsChecked="{Binding MainSettings}" Style="{DynamicResource MaterialDesignActionCheckBox}" Margin="50 0" HorizontalAlignment="Left" Click="IsChecked" Cursor=""/>
                     <CheckBox x:Name="MotivatingCoeffCB" IsChecked="{Binding IsMotivationAccept}" Style="{DynamicResource MaterialDesignActionCheckBox}" Margin="100 0" HorizontalAlignment="Left" Click="IsChecked"/>
                     <CheckBox x:Name="SGNTcoeffCB" IsChecked="{Binding SGNTcoeff}" Style="{DynamicResource MaterialDesignActionCheckBox}" Margin="150 0" HorizontalAlignment="Left" Click="IsChecked"/>
                 </Grid>
             </Grid>
         </materialDesign:Card>
     </Grid>
-
-
-    <!--<Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="8*"/>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-
-        <Border Background="#ecece7" CornerRadius="20" Grid.RowSpan="10" Grid.ColumnSpan="10" BorderBrush="#979392" BorderThickness="2"/>
-        <StackPanel Grid.Row="0" Grid.ColumnSpan="5" HorizontalAlignment="Stretch" Margin="15" Width="Auto" Background="Transparent">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="20*"/>
-                    <ColumnDefinition Width="30"/>
-                    <ColumnDefinition Width="30"/>
-                    <ColumnDefinition Width="30"/>
-                </Grid.ColumnDefinitions>
-                <Menu VerticalAlignment="Top" Height="25" BorderBrush="#ecece7" Grid.Row="0" Grid.Column="0" Background="Transparent">
-                    <MenuItem Header="ФАЙЛ">
-                        <MenuItem Foreground="#FF27292B" Background="Transparent" Header="Открыть..." HorizontalAlignment="Left" />
-                        <MenuItem Foreground="#FF27292B" Background="Transparent" Header="Сохранить..."></MenuItem>
-                    </MenuItem>
-                    <MenuItem Header="СПРАВОЧНИК">
-                        <MenuItem Foreground="#FF27292B" Background="Transparent" Header="Справочник веществ" ></MenuItem>
-                        <MenuItem Foreground="#FF27292B" Background="Transparent"  Header="Ставки платы за выбросы загрязняющих веществ" ></MenuItem>
-                    </MenuItem>
-                    <MenuItem Header="СПРАВКА">
-                        <MenuItem Foreground="#FF27292B" Background="Transparent"  Header="О программе" ></MenuItem>
-                    </MenuItem>
-                </Menu>
-                <Button Grid.Column="1" Style="{StaticResource PinkButtonStyle}" HorizontalAlignment="Left" Click="CollapseWindow" Width="Auto" Height="30" Margin="0">
-                    <Image Source="{StaticResource CollapseIconDrawingImage}"/>
-                </Button>
-                <Button Grid.Column="2" Style="{StaticResource PinkButtonStyle}" HorizontalAlignment="Center" Click="FullScreenWindow" Width="Auto" Height="30" x:Name="MinMaxButton" Margin="0">
-                    <Image Source="{StaticResource FullScreenIconDrawingImage}" x:Name="MinMaxImage"/>
-                </Button>
-                <Button Grid.Column="3" Style="{StaticResource PinkButtonStyle}" HorizontalAlignment="Right" Click="CloseWindow" Width="Auto" Height="30" Margin="0">
-                    <Image Source="{StaticResource CloseIconDrawingImage}"/>
-                </Button>
-            </Grid>-->
-
-    <!--</StackPanel>-->
-    <!--</Grid>-->
-
-
-
 </Window>

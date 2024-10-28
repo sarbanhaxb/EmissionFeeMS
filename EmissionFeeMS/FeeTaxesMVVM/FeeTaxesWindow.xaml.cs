@@ -1,23 +1,11 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using static MaterialDesignThemes.Wpf.Theme;
 
-namespace EmissionFeeMS.NotMW
+namespace EmissionFeeMS.FeeTaxesMVVM
 {
     /// <summary>
     /// Логика взаимодействия для FeeTaxesWindow.xaml
@@ -63,7 +51,7 @@ namespace EmissionFeeMS.NotMW
         }
 
         private void MinimizeApp(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
-        
+
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -76,7 +64,7 @@ namespace EmissionFeeMS.NotMW
 
         private void EditPollutant(object sender, MouseButtonEventArgs e)
         {
-            if (MainData.CurrentCell.Column.Header.ToString() == "Вещества") 
+            if (MainData.CurrentCell.Column.Header.ToString() == "Вещества")
                 PullutantField.IsReadOnly = false;
         }
 

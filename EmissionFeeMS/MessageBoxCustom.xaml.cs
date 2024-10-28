@@ -1,34 +1,7 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.MsForms;
-using DocumentFormat.OpenXml.Office2021.Excel.Pivot;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Vml.Office;
-using DocumentFormat.OpenXml.Vml;
-using DocumentFormat.OpenXml.Wordprocessing;
-using MaterialDesignThemes.Wpf.Transitions;
-using MaterialDesignThemes.Wpf;
-using SharpVectors.Dom.Css;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Net.WebRequestMethods;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace EmissionFeeMS.NotMW
+namespace EmissionFeeMS
 {
     /// <summary>
     /// Логика взаимодействия для MessageBoxCustom.xaml

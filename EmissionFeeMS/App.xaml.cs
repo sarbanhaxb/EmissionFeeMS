@@ -1,9 +1,4 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.IO;
+﻿using System.Windows;
 
 namespace EmissionFeeMS
 {

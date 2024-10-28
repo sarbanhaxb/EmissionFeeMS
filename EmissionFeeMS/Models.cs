@@ -1,13 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.IO;
-using System.Windows;
 
 namespace EmissionFeeMS
 {
@@ -32,9 +24,9 @@ namespace EmissionFeeMS
         string? code;
         string? title;
         double mass;
-        double inflationCoeff = Settings.GetSettings().IsInflationCoeff == Visibility.Visible? Settings.GetSettings().InflationCoeff : 1;
-        double _SGNTcoeff = Settings.GetSettings().SGNTcoeff == System.Windows.Visibility.Visible ? 2 : 1;
-        double motivatingCoeff = Settings.GetSettings().IsMotivationAccept == System.Windows.Visibility.Visible ? new List<double>() { 25, 100 }[Settings.GetSettings().MotivatingCoeff] : 1;
+        double inflationCoeff;
+        double _SGNTcoeff;
+        double motivatingCoeff;
         double fee;
         double result;
 
@@ -57,6 +49,7 @@ namespace EmissionFeeMS
                 using var context = new ApplicationContext();
                 context.EmissionFees.Load();
                 return context.EmissionFees.Where(x => x.Code == code).Select(x => x.Title).FirstOrDefault();
+                //return title;
             }
             private set
             {
