@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.IO;
+using System.Windows;
 
 namespace EmissionFeeMS
 {
@@ -26,21 +27,14 @@ namespace EmissionFeeMS
         public string? Pollutant { get; set; }
     }
 
-    public class Coeff
-    {
-        public int Id { get; set; }
-        public string? Title { get; set; }
-        public string? Value { get; set; }
-    }
-
     public class CalcResult : INotifyPropertyChanged
     {
         string? code;
         string? title;
         double mass;
-        double inflationCoeff = ApplicationProperty.AppProp.IsInflationCoeff ? ApplicationProperty.AppProp.InflationCoeff : 1;
-        double _SGNTcoeff = ApplicationProperty.AppProp.SGNTcoeff ? 2 : 1;
-        double motivatingCoeff = ApplicationProperty.AppProp.IsMotivationAccept ? new List<double>() { 25, 100 }[ApplicationProperty.AppProp.MotivatingCoeff] : 1;
+        double inflationCoeff = Settings.GetSettings().IsInflationCoeff == Visibility.Visible? Settings.GetSettings().InflationCoeff : 1;
+        double _SGNTcoeff = Settings.GetSettings().SGNTcoeff == System.Windows.Visibility.Visible ? 2 : 1;
+        double motivatingCoeff = Settings.GetSettings().IsMotivationAccept == System.Windows.Visibility.Visible ? new List<double>() { 25, 100 }[Settings.GetSettings().MotivatingCoeff] : 1;
         double fee;
         double result;
 
@@ -148,133 +142,5 @@ namespace EmissionFeeMS
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    public class DataEntry
-    {
-        public string? Key { get; set; }
-        public dynamic? Value { get; set; }
-    }
-
-    public class BoolOrDouble
-    {
-        public bool? BoolValue { get; set; }
-        public double? DoubleValue { get; set; }
-
-        public BoolOrDouble(bool value)
-        {
-            BoolValue = value;
-            DoubleValue = null;
-        }
-
-        public BoolOrDouble(double value)
-        {
-            DoubleValue = value;
-            BoolValue = null;
-        }
-    }
-
-    public class AppProperty : INotifyPropertyChanged
-    {
-        double _InflationCoeff;
-        bool _IsInflationCoeff;
-        bool _SGNTcoeff;
-        bool _NewCoeffAccept;
-        int _MotivatingCoeff;
-        bool _IsPrintedIfHaventFee;
-        bool _IsPrintedIfZero;
-        bool _IsMotivationAccept;
-        bool _IsPrintedWithCoeff;
-
-        public double InflationCoeff
-        {
-            get => _InflationCoeff;
-            set
-            {
-                _InflationCoeff = value;
-                OnPropertyChanged(nameof(InflationCoeff));
-            }
-        }
-        public bool IsInflationCoeff
-        {
-            get => _IsInflationCoeff; set
-            {
-                _IsInflationCoeff = value;
-                OnPropertyChanged(nameof(IsInflationCoeff));
-            }
-        }
-        public bool SGNTcoeff
-        {
-            get => _SGNTcoeff; set
-            {
-                _SGNTcoeff = value;
-                OnPropertyChanged(nameof(SGNTcoeff));
-            }
-        }
-        public bool NewCoeffAccept
-        {
-            get => _NewCoeffAccept; set
-            {
-                _NewCoeffAccept = value;
-                OnPropertyChanged(nameof(NewCoeffAccept));
-            }
-        }
-        public int MotivatingCoeff
-        {
-            get => _MotivatingCoeff;
-            set
-            {
-                _MotivatingCoeff = value;
-                OnPropertyChanged(nameof(MotivatingCoeff));
-            }
-        }
-        public bool IsPrintedIfHaventFee
-        {
-            get => _IsPrintedIfHaventFee; set
-            {
-                _IsPrintedIfHaventFee = value;
-                OnPropertyChanged(nameof(IsPrintedIfHaventFee));
-            }
-        }
-        public bool IsPrintedIfZero
-        {
-            get => _IsPrintedIfZero;
-            set
-            {
-                _IsPrintedIfZero = value;
-                OnPropertyChanged(nameof(IsPrintedIfZero));
-            }
-        }
-        public bool IsMotivationAccept
-        {
-            get => _IsMotivationAccept;
-            set
-            {
-                _IsMotivationAccept = value;
-                OnPropertyChanged(nameof(IsMotivationAccept));
-            }
-        }
-        public bool IsPrintedWithCoeff
-        {
-            get => IsPrintedIfHaventFee;
-            set
-            {
-                _IsPrintedWithCoeff = value;
-                OnPropertyChanged(nameof(IsPrintedIfHaventFee));
-            }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    public static class ApplicationProperty
-    {
-        public static AppProperty AppProp = Load();
-        public static void Save() => File.WriteAllText("AppProperty", JsonSerializer.Serialize(AppProp));
-        public static AppProperty Load() => JsonSerializer.Deserialize<AppProperty>(new FileStream("AppProperty", FileMode.OpenOrCreate));
     }
 }

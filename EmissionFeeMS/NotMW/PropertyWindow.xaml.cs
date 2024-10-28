@@ -26,23 +26,28 @@ namespace EmissionFeeMS.NotMW
     /// </summary>
     public partial class PropertyWindow : Window
     {
-        MainWindow Parent;
+        private readonly MainWindow? ParentWindow = null;
+        private readonly Settings _settings;
         public PropertyWindow(MainWindow window)
         {
             InitializeComponent();
+            _settings = Settings.GetSettings();
+            _initControlls();
+            ParentWindow = window;
+        }
 
-            Parent = window;
+        private void _initControlls()
+        {
+            InflationCoeff.Text = Convert.ToString(_settings.InflationCoeff);
+            isInflationCoeff.IsChecked = _settings.IsInflationCoeff == Visibility.Visible? true : false;
+            newCoeffAccept.IsChecked = _settings.NewCoeffAccept;
+            IsMotivationAccept.IsChecked = _settings.IsMotivationAccept == Visibility.Visible ? true : false;
+            MotivatingCoeff.SelectedIndex = _settings.MotivatingCoeff;
+            SGNTcoeff.IsChecked = _settings.SGNTcoeff == System.Windows.Visibility.Visible ? true : false;
 
-            InflationCoeff.Text = Convert.ToString(ApplicationProperty.AppProp.InflationCoeff);
-            isInflationCoeff.IsChecked = ApplicationProperty.AppProp.IsInflationCoeff;
-            newCoeffAccept.IsChecked = ApplicationProperty.AppProp.NewCoeffAccept;
-            IsMotivationAccept.IsChecked = ApplicationProperty.AppProp.IsMotivationAccept;
-            MotivatingCoeff.SelectedIndex = ApplicationProperty.AppProp.MotivatingCoeff;
-            SGNTcoeff.IsChecked = ApplicationProperty.AppProp.SGNTcoeff;
-
-            IsPrintedIfHaventFee.IsChecked = ApplicationProperty.AppProp.IsPrintedIfHaventFee;
-            IsPrintedIfZero.IsChecked = ApplicationProperty.AppProp.IsPrintedIfZero;
-            IsPrintedWithCoeff.IsChecked = ApplicationProperty.AppProp.IsPrintedWithCoeff;
+            IsPrintedIfHaventFee.IsChecked = _settings.IsPrintedIfHaventFee;
+            IsPrintedIfZero.IsChecked = _settings.IsPrintedIfZero;
+            IsPrintedWithCoeff.IsChecked = _settings.IsPrintedWithCoeff;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -57,19 +62,19 @@ namespace EmissionFeeMS.NotMW
 
         private void SaveDataChange(object sender, RoutedEventArgs e)
         {
-            ApplicationProperty.AppProp.InflationCoeff = Convert.ToDouble(InflationCoeff.Text.Replace(".", ","));
-            ApplicationProperty.AppProp.IsInflationCoeff = (bool)isInflationCoeff.IsChecked;
-            ApplicationProperty.AppProp.NewCoeffAccept = (bool)newCoeffAccept.IsChecked;
-            ApplicationProperty.AppProp.IsMotivationAccept = (bool)IsMotivationAccept.IsChecked;
-            ApplicationProperty.AppProp.MotivatingCoeff = MotivatingCoeff.SelectedIndex;
-            ApplicationProperty.AppProp.SGNTcoeff = (bool)SGNTcoeff.IsChecked;
+            _settings.InflationCoeff = Convert.ToDouble(InflationCoeff.Text.Replace(".", ","));
+            _settings.IsInflationCoeff = (bool)isInflationCoeff.IsChecked ? Visibility.Visible: Visibility.Hidden;
+            _settings.NewCoeffAccept = (bool)newCoeffAccept.IsChecked;
+            _settings.IsMotivationAccept = (bool)IsMotivationAccept.IsChecked ? Visibility.Visible : Visibility.Hidden;
+            _settings.MotivatingCoeff = MotivatingCoeff.SelectedIndex;
+            _settings.SGNTcoeff = (bool)SGNTcoeff.IsChecked ? Visibility.Visible : Visibility.Hidden;
 
-            ApplicationProperty.AppProp.IsPrintedIfHaventFee = (bool)IsPrintedIfHaventFee.IsChecked;
-            ApplicationProperty.AppProp.IsPrintedIfZero = (bool)IsPrintedIfZero.IsChecked;
-            ApplicationProperty.AppProp.IsPrintedWithCoeff = (bool)IsPrintedWithCoeff.IsChecked;
+            _settings.IsPrintedIfHaventFee = (bool)IsPrintedIfHaventFee.IsChecked;
+            _settings.IsPrintedIfZero = (bool)IsPrintedIfZero.IsChecked;
+            _settings.IsPrintedWithCoeff = (bool)IsPrintedWithCoeff.IsChecked;
 
-            Parent.ShowCoeffColumn();
-            ApplicationProperty.Save();
+            ParentWindow.DataContext = _settings;
+            _settings.Save();
         }
     }
 }

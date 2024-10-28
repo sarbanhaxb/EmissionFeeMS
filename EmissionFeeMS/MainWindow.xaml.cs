@@ -34,41 +34,30 @@ namespace EmissionFeeMS
     public partial class MainWindow : Window
     {
         private readonly ObservableCollection<CalcResult> calcResults = [];
+        public Settings _settings = null;
+
         public MainWindow()
         {
             using ApplicationContext context = new();
-            //using ApplicationContextOLD contextOLD = new ApplicationContextOLD();
             context.FeeTaxes.Load();
-            //contextOLD.feetaxes.Load();
-
-            //ObservableCollection<FeeTax> FT = context.FeeTaxes.Local.ToObservableCollection();
-            //ObservableCollection<FeeTax> FTold = contextOLD.feetaxes.Local.ToObservableCollection();
-
-            //foreach (FeeTax feeTax in FTold)
-            //{
-            //    Trace.WriteLine($"{feeTax.Pollutant} {feeTax.Title}");
-
-            //    feeTax.Fee = Math.Round(feeTax.Fee, 2 );
-            //    context.FeeTaxes.Add( feeTax );
-            //    context.SaveChanges();
-            //}
+            _settings = Settings.GetSettings();
 
             InitializeComponent();
             MainData.ItemsSource = calcResults;
-            DataContext = ApplicationProperty.AppProp;
+            DataContext = _settings;
             ShowCoeffColumn();
         }
 
         public void ShowCoeffColumn()
         {
-            InflationCoeffColumn.Visibility = ApplicationProperty.AppProp.IsInflationCoeff ? Visibility.Visible : Visibility.Hidden;
-            SGNTcoeffColumn.Visibility = ApplicationProperty.AppProp.SGNTcoeff ? Visibility.Visible : Visibility.Hidden;
-            MotivatingCoeffColumn.Visibility = ApplicationProperty.AppProp.IsMotivationAccept ? Visibility.Visible : Visibility.Hidden;
+            //InflationCoeffColumn.Visibility = _settings.IsInflationCoeff;
+            //SGNTcoeffColumn.Visibility = _settings.SGNTcoeff;
+            //MotivatingCoeffColumn.Visibility = _settings.IsMotivationAccept;
             foreach (CalcResult calcResult in calcResults)
             {
-                calcResult.InflationCoeff = ApplicationProperty.AppProp.IsInflationCoeff ? ApplicationProperty.AppProp.InflationCoeff : 1;
-                calcResult.SGNTcoeff = ApplicationProperty.AppProp.SGNTcoeff ? 2 : 1;
-                calcResult.MotivatingCoeff = ApplicationProperty.AppProp.IsMotivationAccept ? new List<double>() { 25, 100 }[ApplicationProperty.AppProp.MotivatingCoeff] : 1;
+                calcResult.InflationCoeff = _settings.IsInflationCoeff == Visibility.Visible ? _settings.InflationCoeff : 1;
+                calcResult.SGNTcoeff = _settings.SGNTcoeff == Visibility.Visible ? 2 : 1;
+                calcResult.MotivatingCoeff = _settings.IsMotivationAccept == Visibility.Visible ? new List<double>() { 25, 100 }[_settings.MotivatingCoeff] : 1;
             }
         }
 
@@ -199,35 +188,43 @@ namespace EmissionFeeMS
 
         private void AddNewRow(object sender, RoutedEventArgs e) => calcResults.Add(new CalcResult());
 
-        private void OpenPropertyWindows(object sender, RoutedEventArgs e) => new PropertyWindow(this).ShowDialog();
+        private void OpenPropertyWindows(object sender, RoutedEventArgs e)
+        {
+            if ((bool)new PropertyWindow(this).ShowDialog())
+            {
+                _settings = Settings.GetSettings();
+                DataContext = _settings;
+                ShowCoeffColumn();
+            }
+        }
 
         private void IsChecked(object sender, RoutedEventArgs e)
         {
-            System.Windows.Controls.CheckBox senderCB = (System.Windows.Controls.CheckBox)sender;
-            switch (senderCB.Name)
-            {
-                case "InflationCoeffCB":
-                    InflationCoeffColumn.Visibility = (bool)senderCB.IsChecked ? Visibility.Visible : Visibility.Hidden;
-                    foreach (CalcResult calcResult in calcResults)
-                    {
-                        calcResult.InflationCoeff = (bool)senderCB.IsChecked ? ApplicationProperty.AppProp.InflationCoeff : 1;
-                    }
-                    break;
-                case "SGNTcoeffCB":
-                    SGNTcoeffColumn.Visibility = (bool)senderCB.IsChecked ? Visibility.Visible : Visibility.Hidden;
-                    foreach (CalcResult calcResult in calcResults)
-                    {
-                        calcResult.SGNTcoeff = (bool)senderCB.IsChecked ? 2 : 1;
-                    }
-                    break;
-                case "MotivatingCoeffCB":
-                    MotivatingCoeffColumn.Visibility = (bool)senderCB.IsChecked ? Visibility.Visible : Visibility.Hidden;
-                    foreach (CalcResult calcResult in calcResults)
-                    {
-                        calcResult.MotivatingCoeff = (bool)senderCB.IsChecked ? new List<double>() { 25, 100 }[(bool)senderCB.IsChecked ? 1 : 0] : 1;
-                    }
-                    break;
-            }
+            //System.Windows.Controls.CheckBox senderCB = (System.Windows.Controls.CheckBox)sender;
+            //switch (senderCB.Name)
+            //{
+            //    case "InflationCoeffCB":
+            //        InflationCoeffColumn.Visibility = (bool)senderCB.IsChecked ? Visibility.Visible : Visibility.Hidden;
+            //        foreach (CalcResult calcResult in calcResults)
+            //        {
+            //            calcResult.InflationCoeff = (bool)senderCB.IsChecked ? _settings.InflationCoeff : 1;
+            //        }
+            //        break;
+            //    case "SGNTcoeffCB":
+            //        SGNTcoeffColumn.Visibility = (bool)senderCB.IsChecked ? Visibility.Visible : Visibility.Hidden;
+            //        foreach (CalcResult calcResult in calcResults)
+            //        {
+            //            calcResult.SGNTcoeff = (bool)senderCB.IsChecked ? 2 : 1;
+            //        }
+            //        break;
+            //    case "MotivatingCoeffCB":
+            //        MotivatingCoeffColumn.Visibility = (bool)senderCB.IsChecked ? Visibility.Visible : Visibility.Hidden;
+            //        foreach (CalcResult calcResult in calcResults)
+            //        {
+            //            calcResult.MotivatingCoeff = (bool)senderCB.IsChecked ? new List<double>() { 25, 100 }[(bool)senderCB.IsChecked ? 1 : 0] : 1;
+            //        }
+            //        break;
+            //}
         }
 
         private void FileOpen_Click(object sender, RoutedEventArgs e)
@@ -310,42 +307,5 @@ namespace EmissionFeeMS
                 }
             }
         }
-
-        //public void LoadFromMS()
-        //{
-        //    Trace.WriteLine("TUT");
-
-        //    string filePath = "C:\\Users\\sarba\\source\\repos\\EmissionFeeMS\\EmissionFeeMS\\TEMP(1).DOCX";
-        //    using ApplicationContext context = new ApplicationContext();
-        //    using WordprocessingDocument wordDoc = WordprocessingDocument.Open(filePath, false);
-        //    context.Database.EnsureCreated();
-        //    Body body = wordDoc.MainDocumentPart.Document.Body;
-        //    IEnumerable<Table> tables = body.Elements<Table>();
-
-        //    foreach (Table table in tables)
-        //    {
-        //        foreach (var row in table.Elements<TableRow>())
-        //        {
-        //            List<string> rowData = new List<string>();
-        //            foreach (var cell in row.Elements<TableCell>())
-        //            {
-        //                string cellText = cell.InnerText;
-        //                rowData.Add(cellText);
-        //            }
-        //            EmissionFee emissionFee = new EmissionFee();
-        //            emissionFee.Code = rowData[0];
-        //            emissionFee.Title = rowData[1];
-        //            emissionFee.HazardClass = Convert.ToString(rowData[2]);
-        //            context.EmissionFees.Add(emissionFee);
-        //        }
-        //    }
-        //    context.SaveChanges();
-        //    Trace.WriteLine("USPESHNIY USPEH");
-        //}
-
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    LoadFromMS();
-        //}
     }
 }
